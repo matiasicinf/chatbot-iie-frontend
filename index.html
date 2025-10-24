@@ -46,21 +46,21 @@
     }
 
     /* ======== CONTENEDOR CHAT ======== */
-    #custom-chat-widget {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      width: var(--chat--window--width);
-      height: var(--chat--window--height);
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      z-index: 9998;
-      display: none; /* oculto por defecto */
-    }
+	#custom-chat-widget {
+	  position: fixed;
+	  bottom: 0;
+	  right: 0;
+	  width: 100%;              /* ocupa todo el ancho del iframe */
+	  height: 100%;             /* ocupa todo el alto del iframe */
+	  background: white;
+	  border-radius: 0;          /* sin borde redondeado dentro del iframe */
+	  overflow: hidden;
+	  display: flex;
+	  flex-direction: column;
+	  z-index: 9998;
+	  display: flex; /* visible siempre dentro del iframe */
+	}
+
 
     #chat-header {
       background-color: var(--chat--header--background);
