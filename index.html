@@ -183,23 +183,38 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://n8n-render-e1vk.onrender.com/webhook/chat-ui'; 
-    const messagesContainer = document.getElementById('messages-container');
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
-    const chatWidget = document.getElementById('custom-chat-widget');
-    const chatToggle = document.getElementById('chat-toggle');
-    const minimizeBtn = document.getElementById('minimize-chat');
-
-    // Mostrar/ocultar el chat
-    chatToggle.addEventListener('click', () => {
-      chatWidget.style.display = 'flex';
-      chatToggle.style.display = 'none';
-    });
-    minimizeBtn.addEventListener('click', () => {
-      chatWidget.style.display = 'none';
-      chatToggle.style.display = 'flex';
-    });
+    const WEBHOOK_URL = 'https://n8n-render-e1vk.onrender.com/webhook/chat-ui';
+	const messagesContainer = document.getElementById('messages-container');
+	const userInput        = document.getElementById('user-input');
+	const sendButton       = document.getElementById('send-button');
+	const chatWidget       = document.getElementById('custom-chat-widget');
+	const chatToggle       = document.getElementById('chat-toggle');
+	const minimizeBtn      = document.getElementById('minimize-chat');
+	
+	// --- Detectar si está en iframe o si pidieron ocultar el botón ---
+	const params   = new URLSearchParams(location.search);
+	const inIframe = (window.self !== window.top);
+	const hideBtn  = params.get('hideBtn') === '1' || inIframe;
+	
+	// Helpers para abrir/cerrar
+	function openChat() {
+	  if (chatWidget) chatWidget.style.display = 'flex';
+	  if (chatToggle) chatToggle.style.display = 'none';
+	}
+	function closeChat() {
+	  if (chatWidget) chatWidget.style.display = 'none';
+	  if (chatToggle) chatToggle.style.display = 'flex';
+	}
+	
+	// Mostrar/ocultar con el botón interno (si existe)
+	if (chatToggle)   chatToggle.addEventListener('click', openChat);
+	if (minimizeBtn)  minimizeBtn.addEventListener('click', closeChat);
+	
+	// Si está embebido (o viene ?hideBtn=1), ocultar el botón interno y abrir directo
+	if (hideBtn) {
+	  if (chatToggle) chatToggle.style.display = 'none';
+	  openChat();
+	}
 
     // ID de sesión persistente
     let sessionId = localStorage.getItem('chatSessionId');
