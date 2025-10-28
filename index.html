@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chatbot IIE Personalizado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --chat--color--primary: #006D9C;
+      --chat--color--primary: #006D9C;            /* azul IIE */
+      --chat--color--secondary: #A1D5EB;          /* azul claro mensajes usuario */
+      --chat--color-secondary-shade-50: #E5E5E5;  /* fondo mensajes bot */
+      --chat--color-light: #F8F9FA;   
+
       --chat--color--primary-shade-50: #2299C5;
       --chat--color--primary--shade-100: #2299C5;
-      --chat--color--secondary: #A1D5EB;
-      --chat--color-secondary-shade-50: #BDBDBD;
+
       --chat--color-white: #FFFFFF;
-      --chat--color-light: #F2F2F2;
       --chat--color-dark: #333333;
       --chat--color-disabled: #777980;
       --chat--color-typing: #404040;
@@ -24,6 +27,9 @@
       --chat--message--user--color: var(--chat--color-dark);
       --chat--message--bot--background: var(--chat--color-secondary-shade-50);
       --chat--message--bot--color: var(--chat--color-dark);
+    }
+    body, input, button {
+      font-family: 'Poppins', sans-serif;
     }
 
     /* ======== BOTÓN FLOTANTE ======== */
@@ -88,10 +94,13 @@
     }
 
     .message {
+      /*display: inline-block;*/ 
       margin-bottom: 10px;
       padding: 8px 12px;
       border-radius: 10px;
       max-width: 80%;
+      width: fit-content; 
+      min-width: 60px;
       word-wrap: break-word;
     }
 
@@ -183,7 +192,7 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://n8n-render-e1vk.onrender.com/webhook/chat-ui';
+    const WEBHOOK_URL = 'https://n8n.iie.cl/webhook/chat-ui';
 	const messagesContainer = document.getElementById('messages-container');
 	const userInput        = document.getElementById('user-input');
 	const sendButton       = document.getElementById('send-button');
