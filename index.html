@@ -298,8 +298,11 @@
 	
 	// Mostrar/ocultar con el botón interno (si existe)
 	if (chatToggle)   chatToggle.addEventListener('click', openChat);
-	if (minimizeBtn)  minimizeBtn.addEventListener('click', closeChat);
-	
+	if (minimizeBtn) {
+    minimizeBtn.addEventListener('click', () => {
+        chatWidget.style.display = 'none';
+    });
+}
 	// Si está embebido (o viene ?hideBtn=1), ocultar el botón interno y abrir directo
 	if (hideBtn) {
 	  if (chatToggle) chatToggle.style.display = 'none';
