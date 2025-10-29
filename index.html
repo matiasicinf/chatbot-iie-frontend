@@ -69,22 +69,27 @@
 
 
     #chat-header {
-      background-color: var(--chat--header--background);
-      color: var(--chat--header--color);
-      padding: 0.8rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    background-color: var(--chat--header--background);
+    color: var(--chat--header--color);
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
 
-    #chat-header h3 { margin: 0; font-size: 1.1em; }
-    #chat-header button {
-      background: transparent;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
+    #chat-header h3 { 
+    margin: 0; 
+    font-size: 1.1em; 
     }
+
+    #chat-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    }
+
 
     #messages-container {
       flex-grow: 1;
@@ -100,7 +105,6 @@
       border-radius: 10px;
       max-width: 80%;
       width: fit-content; 
-      min-width: 60px;
       word-wrap: break-word;
     }
 
@@ -169,6 +173,72 @@
       padding: 8px 15px;
       cursor: pointer;
     }
+
+    /* ======== HEADER MODERNO ======== */
+#chat-header {
+  background: linear-gradient(90deg, #006D9C 0%, #009FD6 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;        /* 🔵 hace la imagen circular */
+  background: none;          /* elimina fondo blanco */
+  padding: 0;                /* sin relleno */
+  object-fit: cover;         /* ajusta la imagen dentro del círculo */
+  border: none;              /* sin bordes */
+}
+
+
+.chat-title-box {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.chat-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.chat-subtitle {
+  font-size: 0.7rem;
+  margin: 0;
+  color: #cdeeff;
+}
+
+.chat-close-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease;
+}
+
+.chat-close-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
   </style>
 </head>
 
@@ -179,9 +249,21 @@
   <!-- Ventana del chatbot -->
   <div id="custom-chat-widget">
     <div id="chat-header">
-      <h3>Chatbot IIE</h3>
-      <button id="minimize-chat">−</button>
+    <div class="chat-header-left">
+        <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png" alt="IIE" class="chat-logo" />
+        <div class="chat-title-box">
+        <h3 class="chat-title">Asistente IIE</h3>
+        <p class="chat-subtitle">Disponible ahora</p>
+        </div>
     </div>
+
+    <div class="chat-header-right">
+        <button id="restart-chat" class="chat-icon-btn" title="Reiniciar">⟳</button>
+        <button id="minimize-chat" class="chat-icon-btn" title="Cerrar">✕</button>
+    </div>
+    </div>
+
+
 
     <div id="messages-container"></div>
 
