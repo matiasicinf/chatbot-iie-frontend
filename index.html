@@ -382,6 +382,13 @@
 
     // Mensaje inicial
     appendMessage('👋 ¡Hola! ¿Cuál es tu duda?', 'bot');
+
+	window.addEventListener('message', (event) => {
+	  if (event.data?.action === 'openChat') {
+	    chatWidget.style.display = 'flex';
+	  }
+});
   </script>
 </body>
 </html>
+
