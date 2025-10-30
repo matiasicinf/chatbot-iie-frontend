@@ -247,20 +247,38 @@
 
   <!-- Ventana del chatbot -->
   <div id="custom-chat-widget">
-    <div id="chat-header">
-    <div class="chat-header-left">
-        <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png" alt="IIE" class="chat-logo" />
-        <div class="chat-title-box">
-        <h3 class="chat-title">Asistente IIE</h3>
-        <p class="chat-subtitle">Disponible ahora</p>
-        </div>
+    <!-- HEADER del chat -->
+<div id="chat-header">
+  <div class="chat-header-left">
+    <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png"
+         alt="IIE" class="chat-logo" />
+    <div class="chat-title-box">
+      <h3 class="chat-title">Asistente IIE</h3>
+      <p class="chat-subtitle">Disponible ahora</p>
     </div>
+  </div>
 
-    <div class="chat-header-right">
-        <button id="restart-chat" class="chat-icon-btn" title="Reiniciar">⟳</button>
-        <button id="minimize-chat" class="chat-icon-btn" title="Cerrar">✕</button>
-    </div>
-    </div>
+  <div class="chat-header-right" style="display: flex; gap: 8px;">
+    <!-- 🔄 Reiniciar -->
+    <img src="https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg"
+         id="restart-chat"
+         alt="Reiniciar"
+         title="Reiniciar conversación"
+         width="20"
+         height="20"
+         style="cursor:pointer; filter: brightness(0) invert(1);" />
+
+    <!-- ❌ Cerrar -->
+    <img src="https://unpkg.com/lucide-static@latest/icons/x.svg"
+         id="minimize-chat"
+         alt="Cerrar"
+         title="Cerrar ventana"
+         width="20"
+         height="20"
+         style="cursor:pointer; filter: brightness(0) invert(1);" />
+  </div>
+</div>
+
 
 
 
@@ -280,7 +298,8 @@
 	const chatWidget       = document.getElementById('custom-chat-widget');
 	const chatToggle       = document.getElementById('chat-toggle');
 	const minimizeBtn      = document.getElementById('minimize-chat');
-	
+	const restartBtn = document.getElementById('restart-chat');
+
 	// --- Detectar si está en iframe o si pidieron ocultar el botón ---
 	const params   = new URLSearchParams(location.search);
 	const inIframe = (window.self !== window.top);
@@ -298,21 +317,32 @@
 	
 	// Mostrar/ocultar con el botón interno (si existe)
 	if (chatToggle)   chatToggle.addEventListener('click', openChat);
-	if (minimizeBtn) {
-  minimizeBtn.addEventListener('click', () => {
-    //chatWidget.style.display = 'none';
-    // 🚀 Enviar mensaje al padre para que reaparezca la burbuja externa
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage('closeChat', '*');
-    }
-  });
-}
+        if (minimizeBtn) {
+    minimizeBtn.addEventListener('click', () => {
+        //chatWidget.style.display = 'none';
+        // 🚀 Enviar mensaje al padre para que reaparezca la burbuja externa
+        if (window.parent && window.parent !== window) {
+        window.parent.postMessage('closeChat', '*');
+            }
+        });
+        }
 
 	// Si está embebido (o viene ?hideBtn=1), ocultar el botón interno y abrir directo
 	if (hideBtn) {
 	  if (chatToggle) chatToggle.style.display = 'none';
 	  openChat();
 	}
+
+    if (restartBtn) {
+    restartBtn.addEventListener('click', () => {
+        // Limpia todos los mensajes
+        messagesContainer.innerHTML = '';
+        // Muestra nuevamente el mensaje de bienvenida
+        appendMessage('👋 ¡Hola! Soy el Asistente IIE. Estoy aquí para ayudarte con tus consultas sobre tu curso, las evaluaciones, el uso de la plataforma y el soporte disponible.', 'bot');
+        // Envía "_INICIO" al webhook
+        sendMessage('_INICIO');
+    });
+    }
 
     // ID de sesión persistente
     let sessionId = localStorage.getItem('chatSessionId');
@@ -386,7 +416,8 @@
     });
 
     // Mensaje inicial
-    appendMessage('👋 <b>¡Hola! Soy el Asistente IIE.</b><br>Estoy aquí para ayudarte con tus consultas sobre <b>tu curso</b>, las <b>evaluaciones</b>, el uso de la <b>plataforma</b> y el <b>soporte disponible</b>.<br><br>Si no encuentras la información que buscas, puedo mostrarte las <b>preguntas frecuentes</b> o conectarte con <b>nuestro equipo de ayuda</b>.', 'bot');
+    appendMessage('👋 ¡Hola! Soy el Asistente IIE. Estoy aquí para ayudarte con tus consultas sobre tu curso, las evaluaciones, el uso de la plataforma y el soporte disponible.', 'bot');
+
   </script>
 </body>
 </html>
