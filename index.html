@@ -354,11 +354,13 @@
 
     async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
 	  // Mostrar el texto correcto del botón o lo escrito
-	  if (isButtonPayload && buttonLabel) {
-	    appendMessage(buttonLabel, 'user'); // ✅ texto visible del botón
-	  } else {
-	    appendMessage(message, 'user'); // texto escrito manualmente
-	  }
+	   if (message !== '_INICIO') {
+            if (isButtonPayload && buttonLabel) {
+            appendMessage(buttonLabel, 'user');
+            } else {
+            appendMessage(message, 'user');
+            }
+        }
 
 	  userInput.value = '';
 
