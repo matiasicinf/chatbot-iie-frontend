@@ -413,8 +413,13 @@
     });
 
     userInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendButton.click();
-    });
+	  if (e.key === 'Enter') {
+	    e.preventDefault(); // evita el comportamiento por defecto
+	    const input = userInput.value.trim();
+	    if (input) sendMessage(input);
+	  }
+	});
+
 
     // Mensaje inicial
     appendMessage('👋 ¡Hola! Soy el Asistente IIE. Estoy aquí para ayudarte con tus consultas sobre el curso, el uso de la plataforma y el soporte disponible. ¿Cuál es tu duda?', 'bot');
