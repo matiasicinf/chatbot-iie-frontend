@@ -275,7 +275,7 @@
     <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png"
          alt="IIE" class="chat-logo" />
     <div class="chat-title-box">
-      <h3 class="chat-title">Asistente Virtual</h3>
+      <h3 class="chat-title">Asistente Virutal</h3>
       <p class="chat-subtitle">
   <span style="
     display:inline-block;
@@ -325,7 +325,21 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://n8n.iie.cl/webhook/chat-ui';
+  
+  // --- Detectar el parámetro 'webhook' desde la URL ---
+  const params = new URLSearchParams(location.search);
+  const selectedWebhook = params.get('webhook') || 'default';
+
+  // Diccionario de webhooks disponibles
+  const WEBHOOKS = {
+    default: 'https://n8n.iie.cl/webhook/chat-ui',
+    curso1:  'https://n8n.iie.cl/webhook/chat-ui-pruebas',
+  };
+
+  // Usa el que corresponda
+  const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
+    
+   
 	const messagesContainer = document.getElementById('messages-container');
 	const userInput        = document.getElementById('user-input');
 	const sendButton       = document.getElementById('send-button');
