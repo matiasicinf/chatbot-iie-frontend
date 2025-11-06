@@ -239,6 +239,27 @@
 .chat-close-btn:hover {
   background: rgba(255,255,255,0.25);
 }
+.bot-message a.chat-link {
+  color: #006D9C;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.bot-message a.chat-link:hover {
+  text-decoration: underline;
+}
+
+/* mejora el formato de listas */
+.bot-message ul,
+.bot-message ol {
+  margin: 0.3em 0 0.3em 1.2em;
+  padding: 0;
+}
+
+.bot-message li {
+  margin-bottom: 0.2em;
+}
+
 
   </style>
 </head>
@@ -254,8 +275,20 @@
     <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png"
          alt="IIE" class="chat-logo" />
     <div class="chat-title-box">
-      <h3 class="chat-title">Asistente IIE</h3>
-      <p class="chat-subtitle">Disponible ahora</p>
+      <h3 class="chat-title">Asistente Virutal</h3>
+      <p class="chat-subtitle">
+  <span style="
+    display:inline-block;
+    width:8px;
+    height:8px;
+    background:#22C55E;
+    border-radius:50%;
+    margin-right:6px;
+    vertical-align:middle;
+  "></span>
+  En Línea
+</p>
+
     </div>
   </div>
 
@@ -378,23 +411,67 @@
 
 
 
-    function renderResponse(data) {
-      const messageDiv = appendMessage(data.text || "...", 'bot', false);
+  function renderResponse(data) {
+  let text = data.text || "...";
 
-      if (data.buttons && Array.isArray(data.buttons)) {
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.className = 'bot-options-list';
-        data.buttons.forEach(button => {
-          const btn = document.createElement('button');
-          btn.className = 'chat-option-btn list-item-btn';
-          btn.textContent = button.label;
-          btn.onclick = () => sendMessage(button.payload, true, button.label);
-          buttonsContainer.appendChild(btn);
-        });
-        messageDiv.appendChild(buttonsContainer);
-      }
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  marked.setOptions({
+    breaks: true,
+    gfm: true
+  });
+
+  // Convertir Markdown a HTML y agregar formato automático
+  let html = marked.parse(text)
+    .replace(
+      /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+      '<a href="mailto:$1" class="chat-link">$1</a>'
+    )
+    .replace(
+      /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
+      '<a href="tel:$1" class="chat-link">$1</a>'
+    )
+    .replace(
+      /(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" class="chat-link">$1</a>'
+    );
+
+  // ✅ Bloque principal (respuesta del bot)
+  appendMessage(html, 'bot', false);
+
+  // ✅ Bloque combinado: texto extra + botones dentro del mismo contenedor
+  if (data.extra || (data.buttons && data.buttons.length)) {
+    const blockDiv = document.createElement('div');
+    blockDiv.className = 'message bot-message';
+
+    // Texto extra (pregunta)
+    if (data.extra) {
+      const p = document.createElement('p');
+      p.innerHTML = data.extra;
+      p.style.marginBottom = '8px';
+      blockDiv.appendChild(p);
     }
+
+    // Botones
+    if (data.buttons && Array.isArray(data.buttons)) {
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'bot-options-list';
+      data.buttons.forEach(button => {
+        const btn = document.createElement('button');
+        btn.className = 'chat-option-btn list-item-btn';
+        btn.textContent = button.label;
+        btn.onclick = () => sendMessage(button.payload, true, button.label);
+        buttonsContainer.appendChild(btn);
+      });
+      blockDiv.appendChild(buttonsContainer);
+    }
+
+    messagesContainer.appendChild(blockDiv);
+  }
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+
+
 
     function appendMessage(message, sender, scroll = true) {
       const msgDiv = document.createElement('div');
@@ -422,9 +499,10 @@
 
 
     // Mensaje inicial
-    appendMessage('👋 ¡Hola! Soy el Asistente IIE. Estoy aquí para ayudarte con tus consultas sobre el curso, el uso de la plataforma y el soporte disponible. ¿Cuál es tu duda?', 'bot');
+    appendMessage('👋 ¡Hola! Soy tu Asistente Virtual. Estoy aquí para ayudarte con tus consultas sobre el curso Ciudadania Digital, el uso de la plataforma y el soporte disponible. ¿Cuál es tu duda?', 'bot');
 
 
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
