@@ -327,17 +327,19 @@
   <script>
   
   // --- Detectar el parámetro 'webhook' desde la URL ---
-  const params = new URLSearchParams(location.search);
-  const selectedWebhook = params.get('webhook') || 'default';
+const params = new URLSearchParams(location.search);
+const selectedWebhook = params.get('webhook') || 'default';
 
-  // Diccionario de webhooks disponibles
-  const WEBHOOKS = {
-    default: 'https://n8n.iie.cl/webhook/chat-ui',
-    curso1:  'https://n8n.iie.cl/webhook/chat-ui-pruebas',
-  };
+// Diccionario de webhooks disponibles
+const WEBHOOKS = {
+  default: 'https://n8n.iie.cl/webhook/chat-ui',
+  curso1:  'https://n8n.iie.cl/webhook/chat-ui-pruebas',
+};
 
-  // Usa el que corresponda
-  const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
+// Usa el que corresponda
+const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
+
+console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
     
    
 	const messagesContainer = document.getElementById('messages-container');
@@ -349,7 +351,6 @@
 	const restartBtn = document.getElementById('restart-chat');
 
 	// --- Detectar si está en iframe o si pidieron ocultar el botón ---
-	const params   = new URLSearchParams(location.search);
 	const inIframe = (window.self !== window.top);
 	const hideBtn  = params.get('hideBtn') === '1' || inIframe;
 	
