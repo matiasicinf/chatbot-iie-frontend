@@ -123,25 +123,35 @@
       color: var(--chat--message--bot--color);
       margin-right: auto;
       text-align: left;
+      margin-bottom: 8px; 
     }
 
     .bot-options-list {
-      margin-top: 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      padding-top: 5px;
-      border-top: 1px solid rgba(0, 0, 0, 0.1); 
+      width: 100%;
     }
 
+    /* Todos los bloques de mensajes del bot usarán el mismo ancho base */
+    .message.bot-message {
+      width: calc(100% - 20px);   /* mismo ancho visual */
+      margin: 0 0 18px 10px;      /* alineado a la izquierda */
+      padding: 10px;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+
     .chat-option-btn.list-item-btn {
-      background-color: var(--chat--color-white);
-      color: var(--chat--color-dark); 
-      border: 1px solid var(--chat--color-secondary-shade-50);
-      text-align: left;
-      padding: 0.8rem 1rem;
       width: 100%;
+      box-sizing: border-box;
+      text-align: left;
       border-radius: 8px;
+      border: 1px solid var(--chat--color-secondary-shade-50);
+      background-color: var(--chat--color-white);
+      color: var(--chat--color-dark);
+      padding: 0.8rem 1rem;
       cursor: pointer;
       transition: background-color 0.2s ease, border-color 0.2s ease;
     }
@@ -424,7 +434,7 @@ console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
         // Limpia todos los mensajes
         messagesContainer.innerHTML = '';
         // Muestra nuevamente el mensaje de bienvenida
-        appendMessage('👋 ¡Hola! Soy el Asistente IIE. Estoy aquí para ayudarte con tus consultas sobre el curso, el uso de la plataforma y el soporte disponible. ¿Cuál es tu duda?', 'bot');
+        initialMessage(); 
     });
     }
 
@@ -583,21 +593,21 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
 	    if (input) sendMessage(input);
 	  }
 	});
-
-
-   // 🟢 Mensaje inicial con botones de bienvenida (con payloads)
-  (function initialMessage() {
+  // 🟢 Mensaje inicial con botones de bienvenida (con payloads)
+function initialMessage() {
   const blockDiv = document.createElement('div');
   blockDiv.className = 'message bot-message';
 
   // Texto principal
   const p = document.createElement('p');
   p.innerHTML = '👋 ¡Hola! Soy tu Asistente Virtual 💙 Puedes escribir tu consulta directamente o elegir una de las siguientes opciones:';
+  p.style.marginBottom = '10px'; // 👈 agrega espacio debajo del texto
   blockDiv.appendChild(p);
 
   // Contenedor de botones
   const buttonsContainer = document.createElement('div');
   buttonsContainer.className = 'bot-options-list';
+  buttonsContainer.style.marginTop = '0'; // 👈 asegura que no sume espacio doble
 
   // Botón 1: Preguntas frecuentes
   const btn1 = document.createElement('button');
@@ -616,19 +626,18 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
   // Botón 3: No, gracias
   const btn3 = document.createElement('button');
   btn3.className = 'chat-option-btn list-item-btn';
-  btn3.innerHTML = '✉️ Envianos tu consulta';
-  btn3.onclick = () => sendMessage('ENVIAR_CORREO', true, '✉️ Envianos tu consulta');
+  btn3.innerHTML = '✉️ Envíanos tu consulta';
+  btn3.onclick = () => sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
   buttonsContainer.appendChild(btn3);
 
-  // Añadir contenedor de botones al bloque principal
+  // Agregar al bloque
   blockDiv.appendChild(buttonsContainer);
-
-  // Mostrar todo en el chat
   messagesContainer.appendChild(blockDiv);
-
-  // Desplazar hacia abajo automáticamente
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
-})();
+}
+
+// Ejecutar automáticamente al cargar
+initialMessage();
 
 
   </script>
