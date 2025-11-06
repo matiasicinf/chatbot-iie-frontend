@@ -260,6 +260,43 @@
   margin-bottom: 0.2em;
 }
 
+/* Indicador de escritura del bot */
+.typing-message {
+  background-color: var(--chat--message--bot--background);
+  color: var(--chat--message--bot--color);
+  margin-right: auto;
+  text-align: left;
+  border-radius: 10px;
+  padding: 8px 12px;
+  max-width: 80%;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.typing-dots span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--chat--color-typing);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: typing-blink 1.2s infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-blink {
+  0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-2px); }
+}
 
   </style>
 </head>
@@ -398,31 +435,66 @@ console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
       localStorage.setItem('chatSessionId', sessionId);
     }
 
-    async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
-	  // Mostrar el texto correcto del botón o lo escrito
-	   if (message !== '_INICIO') {
-            if (isButtonPayload && buttonLabel) {
-            appendMessage(buttonLabel, 'user');
-            } else {
-            appendMessage(message, 'user');
-            }
-        }
+    // --- Indicador de escritura del bot ---
+let typingEl = null;
 
-	  userInput.value = '';
+function showTyping() {
+  if (typingEl) return;
+  typingEl = document.createElement('div');
+  typingEl.className = 'message bot-message';
+  const inner = document.createElement('div');
+  inner.className = 'typing-message';
+  inner.innerHTML = `
+    <span>Escribiendo</span>
+    <div class="typing-dots">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  typingEl.appendChild(inner);
+  messagesContainer.appendChild(typingEl);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
 
-	  try {
-	    const response = await fetch(WEBHOOK_URL, {
-	      method: 'POST',
-	      headers: { 'Content-Type': 'application/json' },
-	      body: JSON.stringify({ chatInput: message, sessionId })
-	    });
+function hideTyping() {
+  if (!typingEl) return;
+  typingEl.remove();
+  typingEl = null;
+}
 
-	    const data = await response.json();
-	    renderResponse(data);
-	  } catch {
-	    appendMessage("Lo siento, hubo un error de conexión.", 'bot');
-	  }
-	}
+// --- Función principal para enviar mensajes ---
+async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
+  // Mostrar el texto correcto del botón o lo escrito
+  if (message !== '_INICIO') {
+    if (isButtonPayload && buttonLabel) {
+      appendMessage(buttonLabel, 'user');
+    } else {
+      appendMessage(message, 'user');
+    }
+  }
+
+  userInput.value = '';
+
+  try {
+    // 👇 Mostrar indicador de escritura
+    showTyping();
+
+    const response = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatInput: message, sessionId })
+    });
+
+    const data = await response.json();
+
+    // 👇 Ocultar indicador antes de mostrar la respuesta
+    hideTyping();
+    renderResponse(data);
+  } catch {
+    hideTyping();
+    appendMessage("Lo siento, hubo un error de conexión.", 'bot');
+  }
+}
+
 
 
 
@@ -513,8 +585,50 @@ console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
 	});
 
 
-    // Mensaje inicial
-    appendMessage('👋 ¡Hola! Soy tu Asistente Virtual. Estoy aquí para ayudarte con tus consultas sobre el curso Ciudadania Digital, el uso de la plataforma y el soporte disponible. ¿Cuál es tu duda?', 'bot');
+   // 🟢 Mensaje inicial con botones de bienvenida (con payloads)
+  (function initialMessage() {
+  const blockDiv = document.createElement('div');
+  blockDiv.className = 'message bot-message';
+
+  // Texto principal
+  const p = document.createElement('p');
+  p.innerHTML = '👋 ¡Hola! Soy tu Asistente Virtual 💙 Puedes escribir tu consulta directamente o elegir una de las siguientes opciones:';
+  blockDiv.appendChild(p);
+
+  // Contenedor de botones
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.className = 'bot-options-list';
+
+  // Botón 1: Preguntas frecuentes
+  const btn1 = document.createElement('button');
+  btn1.className = 'chat-option-btn list-item-btn';
+  btn1.innerHTML = '📚 Ver preguntas frecuentes';
+  btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
+  buttonsContainer.appendChild(btn1);
+
+  // Botón 2: Soporte
+  const btn2 = document.createElement('button');
+  btn2.className = 'chat-option-btn list-item-btn';
+  btn2.innerHTML = '🙋🏻‍♀️ Contáctanos';
+  btn2.onclick = () => sendMessage('ACTION_MESA_DE_AYUDA', true, '🙋🏻‍♀️ Contáctanos');
+  buttonsContainer.appendChild(btn2);
+
+  // Botón 3: No, gracias
+  const btn3 = document.createElement('button');
+  btn3.className = 'chat-option-btn list-item-btn';
+  btn3.innerHTML = '✉️ Envianos tu consulta';
+  btn3.onclick = () => sendMessage('ENVIAR_CORREO', true, '✉️ Envianos tu consulta');
+  buttonsContainer.appendChild(btn3);
+
+  // Añadir contenedor de botones al bloque principal
+  blockDiv.appendChild(buttonsContainer);
+
+  // Mostrar todo en el chat
+  messagesContainer.appendChild(blockDiv);
+
+  // Desplazar hacia abajo automáticamente
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+})();
 
 
   </script>
