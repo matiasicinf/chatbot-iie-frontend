@@ -551,13 +551,27 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
     if (data.buttons && Array.isArray(data.buttons)) {
       const buttonsContainer = document.createElement('div');
       buttonsContainer.className = 'bot-options-list';
+      
+      
       data.buttons.forEach(button => {
-        const btn = document.createElement('button');
+      let btn;
+      
+        if (button.url) {
+          // Es un botón de enlace externo (como WhatsApp)
+          btn = document.createElement('a');
+          btn.href = button.url;
+          btn.target = '_blank';
+        } else {
+          // Es un botón de interacción con el bot
+          btn = document.createElement('button');
+          btn.onclick = () => sendMessage(button.payload, true, button.label);
+        }
+
         btn.className = 'chat-option-btn list-item-btn';
         btn.textContent = button.label;
-        btn.onclick = () => sendMessage(button.payload, true, button.label);
         buttonsContainer.appendChild(btn);
       });
+
       blockDiv.appendChild(buttonsContainer);
     }
 
@@ -615,13 +629,21 @@ function initialMessage() {
   btn1.innerHTML = '📚 Ver preguntas frecuentes';
   btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
   buttonsContainer.appendChild(btn1);
-
+  /*
   // Botón 2: Soporte
   const btn2 = document.createElement('button');
   btn2.className = 'chat-option-btn list-item-btn';
   btn2.innerHTML = '🙋🏻‍♀️ Contáctanos';
   btn2.onclick = () => sendMessage('ACTION_MESA_DE_AYUDA', true, '🙋🏻‍♀️ Contáctanos');
   buttonsContainer.appendChild(btn2);
+  */
+  // Botón 4: WhatsApp directo
+  const btn4 = document.createElement('a');
+  btn4.className = 'chat-option-btn list-item-btn';
+  btn4.innerHTML = '💬 Chatear por WhatsApp';
+  btn4.href = 'https://wa.me/56999014141';;
+  btn4.target = '_blank';
+  buttonsContainer.appendChild(btn4);
 
   // Botón 3: No, gracias
   const btn3 = document.createElement('button');
