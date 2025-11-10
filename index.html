@@ -30,9 +30,9 @@
     }
     body, input, button {
       font-family: 'Poppins', sans-serif;
-	  font-size: 15px; 
+	  font-size: 14px; 
     }
-
+    
     /* ======== BOTÓN FLOTANTE ======== */
     #chat-toggle {
       position: fixed;
@@ -359,6 +359,28 @@
          style="cursor:pointer; filter: brightness(0) invert(1);" />
   </div>
 </div>
+<!-- 🟢 Mensaje emergente del chatbot -->
+<div id="chat-hint" style="
+  position: fixed;
+  bottom: 100px;
+  right: 90px;
+  background: #006D9C;
+  color: white;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 20px 20px 20px 5px; /* ✅ burbuja tipo mensaje */
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.6s ease;
+  pointer-events: none;
+">
+  ¿Necesitas ayuda con el curso?<br>
+  <span style="font-weight:400;">¡No te quedes con la duda, haz clic aquí!</span>
+</div>
 
 
 
@@ -578,7 +600,12 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
     messagesContainer.appendChild(blockDiv);
   }
 
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // ✅ Desplaza la vista al inicio del nuevo mensaje del bot
+  messagesContainer.scrollTo({
+  top: 0,
+  behavior: 'smooth'
+});
+
 }
 
 
@@ -591,7 +618,12 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
       p.innerHTML = message; // 👈 aquí interpreta los <br>
       msgDiv.appendChild(p);
       messagesContainer.appendChild(msgDiv);
-      if (scroll) messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      if (scroll) {
+      messagesContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      }
       return msgDiv;
     }
 
@@ -657,6 +689,36 @@ function initialMessage() {
   messagesContainer.appendChild(blockDiv);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
+// 🕒 Aparece automáticamente al cargar la página
+  window.addEventListener('load', () => {
+    const hint = document.getElementById('chat-hint');
+    if (!hint) return;
+
+    // Mostrar después de 2 segundos
+    setTimeout(() => {
+      hint.style.opacity = '1';
+      hint.style.transform = 'translateY(0)';
+    }, 2000);
+
+    // Ocultar después de 6 segundos más
+    setTimeout(() => {
+      hint.style.opacity = '0';
+      hint.style.transform = 'translateY(10px)';
+    }, 8000);
+  });
+
+  // ✨ Si se clickea, abre el chat (si existe el botón o el iframe)
+  document.getElementById('chat-hint').addEventListener('click', () => {
+    // si el botón del chat existe
+    const chatBtn = document.getElementById('chat-toggle');
+    if (chatBtn) chatBtn.click();
+
+    // si el iframe padre escucha eventos
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage('openChat', '*');
+    }
+  });
 
 // Ejecutar automáticamente al cargar
 initialMessage();
