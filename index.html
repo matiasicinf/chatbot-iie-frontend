@@ -443,6 +443,19 @@ console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
       localStorage.setItem('chatSessionId', sessionId);
     }
 
+
+let userScrolled = false;
+
+// Detectar si el usuario ha hecho scroll manual
+messagesContainer.addEventListener('scroll', () => {
+  // Si el usuario está casi al final, permitimos el desplazamiento automático
+  if (messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 50) {
+    userScrolled = false;  // El usuario no ha hecho scroll manual
+  } else {
+    userScrolled = true;   // El usuario está haciendo scroll manual
+  }
+});
+
     // --- Indicador de escritura del bot ---
 let typingEl = null;
 
@@ -458,9 +471,18 @@ function showTyping() {
       <span></span><span></span><span></span>
     </div>
   `;
-  typingEl.appendChild(inner);
   messagesContainer.appendChild(typingEl);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+  requestAnimationFrame(() => {
+  const allMessages = messagesContainer.querySelectorAll('.message');
+  const penultimateMessage = allMessages[allMessages.length - 2];
+  if (penultimateMessage) {
+    penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+
+
 }
 
 function hideTyping() {
@@ -471,6 +493,8 @@ function hideTyping() {
 
 // --- Función principal para enviar mensajes ---
 async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
+
+  if (verificarAccionEspecial(message)) return;
   // Mostrar el texto correcto del botón o lo escrito
   if (message !== '_INICIO') {
     if (isButtonPayload && buttonLabel) {
@@ -506,7 +530,7 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
 
 
 
-  function renderResponse(data) {
+function renderResponse(data) {
   let text = data.text || "...";
 
   marked.setOptions({
@@ -515,9 +539,8 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
   });
 
   // Convertir Markdown a HTML y agregar formato automático
-  let html = marked.parse(text)
-  // evita reemplazar si ya está dentro de un <a>
-  .replace(
+  let html = marked.parse(text);
+  html = html.replace(
     /(?<!href="mailto:)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
     '<a href="mailto:$1" class="chat-link">$1</a>'
   )
@@ -530,78 +553,143 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
     '<a href="$1" target="_blank" class="chat-link">$1</a>'
   );
 
-
-  // ✅ Bloque principal (respuesta del bot)
+  // Mensaje principal del bot
   appendMessage(html, 'bot', false);
 
-  // ✅ Bloque combinado: texto extra + botones dentro del mismo contenedor
-  if (data.extra || (data.buttons && data.buttons.length)) {
+  // Si hay botones, se agregan debajo
+  if (data.buttons && Array.isArray(data.buttons)) {
     const blockDiv = document.createElement('div');
     blockDiv.className = 'message bot-message';
 
-    // Texto extra (pregunta)
-    if (data.extra) {
-      const p = document.createElement('p');
-      p.innerHTML = data.extra;
-      p.style.marginBottom = '8px';
-      blockDiv.appendChild(p);
-    }
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'bot-options-list';
 
-    // Botones
-if (data.buttons && Array.isArray(data.buttons)) {
-  const buttonsContainer = document.createElement('div');
-  buttonsContainer.className = 'bot-options-list';
+    data.buttons.forEach(button => {
+      let btn;
+      if (button.url) {
+        btn = document.createElement('a');
+        btn.href = button.url;
+        btn.target = '_blank';
+      } else {
+        btn = document.createElement('button');
+        btn.onclick = () => {
+          btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          sendMessage(button.payload, true, button.label);
+          scrollToBottom();  // 👈 asegura scroll después del click
+        };
+      }
 
-  data.buttons.forEach(button => {
-    let btn;
+      btn.className = 'chat-option-btn list-item-btn';
+      btn.textContent = button.label;
+      buttonsContainer.appendChild(btn);
+    });
 
-    if (button.url) {
-      // Es un botón de enlace externo (como WhatsApp)
-      btn = document.createElement('a');
-      btn.href = button.url;
-      btn.target = '_blank';
-    } else {
-      // Es un botón de interacción con el bot
-      btn = document.createElement('button');
-      btn.onclick = () => {
-        // 🔹 Desplazar suavemente el chat hasta el botón clicado
-        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        // 🔹 Enviar el mensaje normalmente
-        sendMessage(button.payload, true, button.label);
-      };
-    }
-
-    btn.className = 'chat-option-btn list-item-btn';
-    btn.textContent = button.label;
-    buttonsContainer.appendChild(btn);
-  });
-
-  blockDiv.appendChild(buttonsContainer);
-}
-
-
+    blockDiv.appendChild(buttonsContainer);
     messagesContainer.appendChild(blockDiv);
   }
 
-  // ✅ Desplaza suavemente hacia el último mensaje
-  messagesContainer.scrollTo({
-  top: messagesContainer.scrollHeight,
-  behavior: 'smooth'
-});
-  // ✅ Redirección manual de enlaces específicos
+  // Scroll al fondo si no fue bloqueado por scroll manual
+  if (!userScrolled) {
+    scrollToBottom();
+  }
+
+  // Enlaces especiales
   const linkMap = {
     'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
     'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
     'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
   };
 
-  // Buscar todos los enlaces renderizados y aplicar redirección personalizada
   document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
     const href = link.getAttribute('href');
     if (linkMap[href]) {
       link.setAttribute('href', linkMap[href]);
-      link.setAttribute('target', '_blank'); // abrir en nueva pestaña
+      link.setAttribute('target', '_blank');
+    }
+  });
+}
+
+async function mostrarFormularioContacto() {
+  const blockDiv = document.createElement('div');
+  blockDiv.className = 'message bot-message';
+
+  blockDiv.innerHTML = `
+    <div style="text-align:left; margin-bottom:10px;">
+      <p style="font-weight: bold; font-size: 1.4em; color: #333; margin-bottom: 20px; font-family: 'Poppins', sans-serif;">
+        Formulario Correo
+      </p>
+    </div>
+
+    <form id="contact-form" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+      <input type="text" name="nombre" placeholder="Nombre completo" required
+             style="padding:8px; border-radius:6px; border:1px solid #ccc;">
+      <input type="email" name="correo" placeholder="Correo electrónico" required
+             style="padding:8px; border-radius:6px; border:1px solid #ccc;">
+      <input type="text" name="telefono" placeholder="Teléfono (opcional)"
+             style="padding:8px; border-radius:6px; border:1px solid #ccc;">
+      <textarea name="mensaje" placeholder="Escribe tu mensaje aquí..." required
+                style="padding:8px; border-radius:6px; border:1px solid #ccc; min-height:80px;"></textarea>
+      <button type="submit" style="
+          background:#006D9C;
+          color:white;
+          border:none;
+          border-radius:8px;
+          padding:10px;
+          font-weight:600;
+          cursor:pointer;
+      ">Enviar datos</button>
+    </form>
+  `;
+
+  messagesContainer.appendChild(blockDiv);
+
+  requestAnimationFrame(() => {
+  const allMessages = messagesContainer.querySelectorAll('.message');
+  const penultimateMessage = allMessages[allMessages.length - 2];
+  if (penultimateMessage) {
+    penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+
+
+
+  // 📤 Manejar el envío del formulario
+  const form = blockDiv.querySelector('#contact-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Capturar los valores de los campos del formulario
+    const nombre = form.querySelector('[name="nombre"]').value;
+    const correo = form.querySelector('[name="correo"]').value;
+    const telefono = form.querySelector('[name="telefono"]').value; // puede estar vacío
+    const mensaje = form.querySelector('[name="mensaje"]').value;
+
+    // Crear el objeto JSON con las tres variables
+    const formData = {
+        nombre: nombre,
+        correo: correo,
+        telefono: telefono,
+        mensaje: mensaje
+    };
+
+    // Mostrar mensaje mientras se envían los datos
+    appendMessage("📨 Enviando tus datos...", "bot");
+
+    try {
+        const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData), // Enviamos los datos como JSON
+        });
+
+        if (response.ok) {
+            appendMessage("✅ ¡Gracias! Hemos recibido tu mensaje y te contactaremos pronto.", "bot");
+        } else {
+            appendMessage("⚠️ Ocurrió un error al enviar el formulario. Intenta nuevamente más tarde.", "bot");
+        }
+    } catch (error) {
+        appendMessage("⚠️ Error de conexión. Revisa tu red e inténtalo otra vez.", "bot");
     }
   });
 }
@@ -609,23 +697,39 @@ if (data.buttons && Array.isArray(data.buttons)) {
 
 
 
+function verificarAccionEspecial(message) {
+  if (message === 'ENVIAR_CORREO') {
+    mostrarFormularioContacto();
+    return true;
+  }
+  return false;
+}
 
-    function appendMessage(message, sender, scroll = true) {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `message ${sender}-message`;
-      const p = document.createElement('p');
-      p.innerHTML = message; // 👈 aquí interpreta los <br>
-      msgDiv.appendChild(p);
-      messagesContainer.appendChild(msgDiv);
-      if (scroll) {
-        messagesContainer.scrollTo({
-          top: messagesContainer.scrollHeight,
-          behavior: 'smooth'
-        });
-      }
 
-      return msgDiv;
-    }
+
+
+  function appendMessage(message, sender, scroll = true) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${sender}-message`;
+  const p = document.createElement('p');
+  p.innerHTML = message; // Aquí interpreta los <br>
+  msgDiv.appendChild(p);
+  messagesContainer.appendChild(msgDiv);
+
+  // Desplazar al final solo si el usuario no ha hecho scroll manual
+  if (!userScrolled && scroll) {
+  requestAnimationFrame(() => {
+  const allMessages = messagesContainer.querySelectorAll('.message');
+  const penultimateMessage = allMessages[allMessages.length - 2];
+  if (penultimateMessage) {
+    penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+  }
+
+}
+
 
     sendButton.addEventListener('click', () => {
       const input = userInput.value.trim();
@@ -693,7 +797,14 @@ buttonsContainer.appendChild(btn4);
   // Agregar al bloque
   blockDiv.appendChild(buttonsContainer);
   messagesContainer.appendChild(blockDiv);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  const allMessages = messagesContainer.querySelectorAll('.message');
+  const penultimateMessage = allMessages[allMessages.length - 2]; // mensaje antes del "typing"
+
+  if (penultimateMessage) {
+    penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+
 }
 
 // Ejecutar automáticamente al cargar
