@@ -319,8 +319,8 @@
     <!-- HEADER del chat -->
 <div id="chat-header">
   <div class="chat-header-left">
-    <img src="https://storage.googleapis.com/databot-official-migrated/dashboard_api/d06c75bf-d5c6-4413-8fd5-750a209830ae_842fb154-2be8-4b9a-993f-e9f3ebec5c05.png"
-         alt="IIE" class="chat-logo" />
+    <img src="https://i.ibb.co/B2vdzTWP/Chat-GPT-Image-10-nov-2025-02-34-50-a-m.png"
+     alt="Operadora IIE" class="chat-logo" loading="lazy" />
     <div class="chat-title-box">
       <h3 class="chat-title">Asistente Virutal</h3>
       <p class="chat-subtitle">
@@ -516,18 +516,20 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
 
   // Convertir Markdown a HTML y agregar formato automático
   let html = marked.parse(text)
-    .replace(
-      /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-      '<a href="mailto:$1" class="chat-link">$1</a>'
-    )
-    .replace(
-      /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
-      '<a href="tel:$1" class="chat-link">$1</a>'
-    )
-    .replace(
-      /(https?:\/\/[^\s<]+)/g,
-      '<a href="$1" target="_blank" class="chat-link">$1</a>'
-    );
+  // evita reemplazar si ya está dentro de un <a>
+  .replace(
+    /(?<!href="mailto:)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    '<a href="mailto:$1" class="chat-link">$1</a>'
+  )
+  .replace(
+    /(?<!href="tel:)(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
+    '<a href="tel:$1" class="chat-link">$1</a>'
+  )
+  .replace(
+    /(?<!href=")(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" class="chat-link">$1</a>'
+  );
+
 
   // ✅ Bloque principal (respuesta del bot)
   appendMessage(html, 'bot', false);
