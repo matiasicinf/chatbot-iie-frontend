@@ -570,41 +570,48 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
     }
 
     // Botones
-    if (data.buttons && Array.isArray(data.buttons)) {
-      const buttonsContainer = document.createElement('div');
-      buttonsContainer.className = 'bot-options-list';
-      
-      
-      data.buttons.forEach(button => {
-      let btn;
-      
-        if (button.url) {
-          // Es un botón de enlace externo (como WhatsApp)
-          btn = document.createElement('a');
-          btn.href = button.url;
-          btn.target = '_blank';
-        } else {
-          // Es un botón de interacción con el bot
-          btn = document.createElement('button');
-          btn.onclick = () => sendMessage(button.payload, true, button.label);
-        }
+if (data.buttons && Array.isArray(data.buttons)) {
+  const buttonsContainer = document.createElement('div');
+  buttonsContainer.className = 'bot-options-list';
 
-        btn.className = 'chat-option-btn list-item-btn';
-        btn.textContent = button.label;
-        buttonsContainer.appendChild(btn);
-      });
+  data.buttons.forEach(button => {
+    let btn;
 
-      blockDiv.appendChild(buttonsContainer);
+    if (button.url) {
+      // Es un botón de enlace externo (como WhatsApp)
+      btn = document.createElement('a');
+      btn.href = button.url;
+      btn.target = '_blank';
+    } else {
+      // Es un botón de interacción con el bot
+      btn = document.createElement('button');
+      btn.onclick = () => {
+        // 🔹 Desplazar suavemente el chat hasta el botón clicado
+        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // 🔹 Enviar el mensaje normalmente
+        sendMessage(button.payload, true, button.label);
+      };
     }
+
+    btn.className = 'chat-option-btn list-item-btn';
+    btn.textContent = button.label;
+    buttonsContainer.appendChild(btn);
+  });
+
+  blockDiv.appendChild(buttonsContainer);
+}
+
 
     messagesContainer.appendChild(blockDiv);
   }
 
-  // ✅ Desplaza la vista al inicio del nuevo mensaje del bot
+  // ✅ Desplaza suavemente hacia el último mensaje
   messagesContainer.scrollTo({
-  top: 0,
+  top: messagesContainer.scrollHeight,
   behavior: 'smooth'
 });
+
 
 }
 
@@ -619,11 +626,12 @@ async function sendMessage(message, isButtonPayload = false, buttonLabel = null)
       msgDiv.appendChild(p);
       messagesContainer.appendChild(msgDiv);
       if (scroll) {
-      messagesContainer.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
+        messagesContainer.scrollTo({
+          top: messagesContainer.scrollHeight,
+          behavior: 'smooth'
+        });
       }
+
       return msgDiv;
     }
 
@@ -646,7 +654,7 @@ function initialMessage() {
 
   // Texto principal
   const p = document.createElement('p');
-  p.innerHTML = '👋 ¡Hola! Soy tu Asistente Virtual 💙 Puedes escribir tu consulta directamente o elegir una de las siguientes opciones:';
+  p.innerHTML = '👋 ¡Hola! Es un placer ayudarte. Soy tu Asistente Virtual y estoy aquí para guiarte. ¿Cómo puedo asistirte hoy? Escribe tu pregunta o elige una opción:';
   p.style.marginBottom = '10px'; // 👈 agrega espacio debajo del texto
   blockDiv.appendChild(p);
 
