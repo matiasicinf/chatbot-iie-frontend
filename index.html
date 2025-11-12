@@ -652,33 +652,52 @@
   }
 
   function renderResponse(data) {
-    let text = data.text || "...";
+  let text = data.text || "...";
 
-    marked.setOptions({
-      breaks: true,
-      gfm: true
-    });
+  marked.setOptions({
+    breaks: true,
+    gfm: true
+  });
 
-    let html = marked.parse(text);
-    html = html.replace(
-      /(?<!href="mailto:)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-      '<a href="mailto:$1" class="chat-link">$1</a>'
-    )
-    .replace(
-      /(?<!href="tel:)(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
-      '<a href="tel:$1" class="chat-link">$1</a>'
-    )
-    .replace(
-      /(?<!href=")(https?:\/\/[^\s<]+)/g,
-      '<a href="$1" target="_blank" class="chat-link">$1</a>'
-    );
+  // Convertir Markdown a HTML y agregar formato automático
+  let html = marked.parse(text);
+  html = html.replace(
+    /(?<!href="mailto:)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+    '<a href="mailto:$1" class="chat-link">$1</a>'
+  )
+  .replace(
+    /(?<!href="tel:)(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
+    '<a href="tel:$1" class="chat-link">$1</a>'
+  )
+  .replace(
+    /(?<!href=")(https?:\/\/[^\s<]+)/g,
+    '<a href="$1" target="_blank" class="chat-link">$1</a>'
+  );
 
-    appendMessage(html, 'bot', false);
+  appendMessage(html, 'bot', false);
 
+  // Bloque combinado: texto extra + botones dentro del mismo contenedor
+  if (data.extra) {
+  const p = document.createElement('p');
+  p.innerHTML = marked.parse(data.extra);
+  blockDiv.appendChild(p);
+
+  // Crear la barra (hr)
+  const hr = document.createElement('hr');
+  hr.style.border = "1px solid #E2E8F0";  // Barra discreta
+  hr.style.margin = "5px 0";  // Espaciado arriba y abajo de la barra
+
+  // Aumentar espacio debajo de la barra
+  hr.style.marginBottom = '15px';  // Ajusta este valor para el espacio debajo
+
+  blockDiv.appendChild(hr);
+}
+
+
+
+
+    // Botones (si existen)
     if (data.buttons && Array.isArray(data.buttons)) {
-      const blockDiv = document.createElement('div');
-      blockDiv.className = 'message bot-message';
-
       const buttonsContainer = document.createElement('div');
       buttonsContainer.className = 'bot-options-list';
 
@@ -703,27 +722,33 @@
       });
 
       blockDiv.appendChild(buttonsContainer);
-      messagesContainer.appendChild(blockDiv);
     }
 
-    if (!userScrolled) {
-      scrollToBottom();
-    }
-
-    const linkMap = {
-      'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
-      'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
-      'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
-    };
-
-    document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
-      const href = link.getAttribute('href');
-      if (linkMap[href]) {
-        link.setAttribute('href', linkMap[href]);
-        link.setAttribute('target', '_blank');
-      }
-    });
+    messagesContainer.appendChild(blockDiv);
   }
+
+  // Desplazar hacia el final del chat
+  messagesContainer.scrollTo({
+    top: messagesContainer.scrollHeight,
+    behavior: 'smooth'
+  });
+
+  // Redirección manual de enlaces específicos
+  const linkMap = {
+    'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
+    'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
+    'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
+  };
+
+  document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
+    const href = link.getAttribute('href');
+    if (linkMap[href]) {
+      link.setAttribute('href', linkMap[href]);
+      link.setAttribute('target', '_blank'); // abrir en nueva pestaña
+    }
+  });
+
+
 
   async function mostrarFormularioContacto() {
     const blockDiv = document.createElement('div');
