@@ -870,7 +870,7 @@ appendMessage(html, 'bot', false);
     const status = blockDiv.querySelector('#sending-status');
 
     form.addEventListener('submit', async (e) => {
-  e.preventDefault(); // Prevenir el comportamiento por defecto del formulario (recargar página)
+  e.preventDefault();  // Prevenir el comportamiento por defecto del formulario (recargar página)
 
   // Obtener los valores del formulario
   const nombre = form.querySelector('[name="nombre"]').value;
@@ -878,69 +878,50 @@ appendMessage(html, 'bot', false);
   const telefono = form.querySelector('[name="telefono"]').value;
   const mensaje = form.querySelector('[name="mensaje"]').value;
 
-  // Obtener las variables del curso y correo definidas globalmente
-  const nombre_curso = window.nombre_curso || 'Nombre del curso no especificado'; // Si no existe, poner el valor predeterminado
-  const correo_curso = window.correo_curso || 'Correo no especificado'; // Lo mismo para el correo
+  // Obtener las variables del curso y correo, con valores por defecto si no están disponibles
+  const nombre_curso = window.nombre_curso || 'Nombre del curso no especificado';
+  const correo_curso = window.correo_curso || 'Correo no especificado';
 
   console.log('Nombre del curso:', nombre_curso);
   console.log('Correo del curso:', correo_curso);
 
   // Crear el objeto con los datos que se enviarán
-  const formData = {
-    nombre,
-    correo,
-    telefono,
-    mensaje,
-    nombre_curso,
-    correo_curso
-  };
+  const formData = { nombre, correo, telefono, mensaje, nombre_curso, correo_curso };
 
-  // Aquí puedes hacer lo que necesites con formData, como enviarlo a un servidor o webhook
+  // Deshabilitar todos los campos del formulario para prevenir envíos repetidos
+  const inputs = form.querySelectorAll('input, textarea, button');
+  inputs.forEach(el => el.disabled = true);
+
+  // Mostrar el estado de envío del formulario
+  status.style.display = 'block';
+
   try {
+    // Enviar los datos al servidor (n8n webhook)
     const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
+    // Si la respuesta es exitosa, ocultamos el formulario y mostramos un mensaje de éxito
     if (response.ok) {
-      // Si la respuesta es positiva, puedes realizar alguna acción
-      console.log("Formulario enviado con éxito");
+      form.style.opacity = "0";
+      setTimeout(() => form.style.display = "none", 600);  // Ocultar el formulario con animación
+      appendMessage("✅ ¡Gracias! Hemos recibido tu mensaje y te contactaremos pronto.", "bot");
     } else {
-      // Si ocurre un error con la respuesta
-      console.error("Error al enviar el formulario");
+      // Si ocurre un error con la respuesta, mostrar mensaje de error
+      appendMessage("⚠️ Ocurrió un error al enviar el formulario. Intenta nuevamente más tarde.", "bot");
+      status.style.display = 'none';  // Ocultar el estado de envío
+      inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
     }
   } catch (error) {
-    console.error("Error en la conexión", error);
+    // Si hay un error de conexión o otro tipo, mostrar mensaje de error
+    appendMessage("⚠️ Error de conexión. Revisa tu red e inténtalo otra vez.", "bot");
+    status.style.display = 'none';  // Ocultar el estado de envío
+    inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
   }
-});
-
-      const inputs = form.querySelectorAll('input, textarea, button');
-      inputs.forEach(el => el.disabled = true);
-      status.style.display = 'block';
-
-      try {
-        const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-
-        if (response.ok) {
-          form.style.opacity = "0";
-          setTimeout(() => form.style.display = "none", 600);
-          appendMessage("✅ ¡Gracias! Hemos recibido tu mensaje y te contactaremos pronto.", "bot");
-        } else {
-          appendMessage("⚠️ Ocurrió un error al enviar el formulario. Intenta nuevamente más tarde.", "bot");
-          status.style.display = 'none';
-          inputs.forEach(el => el.disabled = false);
-        }
-      } catch (error) {
-        appendMessage("⚠️ Error de conexión. Revisa tu red e inténtalo otra vez.", "bot");
-        status.style.display = 'none';
-        inputs.forEach(el => el.disabled = false);
-      }
     });
+    
   }
 
   function verificarAccionEspecial(message) {
