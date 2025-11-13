@@ -565,7 +565,8 @@
   </div>
 
   <script>
-  
+
+  // Obtener los parámetros de la URL
   const params = new URLSearchParams(location.search);
   const selectedWebhook = params.get('webhook') || 'default';
 
@@ -584,7 +585,6 @@
   const chatToggle       = document.getElementById('chat-toggle');
   const minimizeBtn      = document.getElementById('minimize-chat');
   const restartBtn = document.getElementById('restart-chat');
-
   const inIframe = (window.self !== window.top);
   const hideBtn  = params.get('hideBtn') === '1' || inIframe;
   
@@ -876,8 +876,15 @@ appendMessage(html, 'bot', false);
       const correo = form.querySelector('[name="correo"]').value;
       const telefono = form.querySelector('[name="telefono"]').value;
       const mensaje = form.querySelector('[name="mensaje"]').value;
+      
+      const nombre_curso = params.get('nombre_curso') || 'Nombre del curso no especificado';
+      const correo_curso = params.get('correo_curso') || 'Correo no especificado';
 
-      const formData = { nombre, correo, telefono, mensaje };
+      console.log('Nombre del curso:', nombre_curso);
+      console.log('Correo del curso:', correo_curso);
+
+      const formData = { nombre, correo, telefono, mensaje,nombre_curso,correo_curso };
+      
 
       const inputs = form.querySelectorAll('input, textarea, button');
       inputs.forEach(el => el.disabled = true);
