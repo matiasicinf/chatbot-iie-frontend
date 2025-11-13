@@ -595,11 +595,10 @@
   if (chatToggle) chatToggle.addEventListener('click', openChat);
   if (minimizeBtn) {
     minimizeBtn.addEventListener('click', () => {
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage('closeChat', '*');
-      }
+        closeChat();  // Llama a la función closeChat para cerrar el chat
     });
-  }
+}
+
 
   if (hideBtn) {
     if (chatToggle) chatToggle.style.display = 'none';
