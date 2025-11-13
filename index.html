@@ -309,7 +309,7 @@
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
       box-shadow: var(--shadow-sm);
     }
 
@@ -323,11 +323,20 @@
     .chat-option-btn.list-item-btn:active {
       transform: translateY(0);
     }
-
+    .chat-option-btn.list-item-btn a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;  /* Elimina la línea debajo del ícono */
+}
+.chat-option-btn.list-item-btn img {
+  vertical-align: middle; /* Alinea el ícono de WhatsApp con el texto */
+  width: 18px; /* Ajusta el tamaño del ícono */
+  height: 18px; /* Ajusta el tamaño del ícono */
+}
     /* ======== ÁREA DE INPUT ======== */
     #input-area {
       display: flex;
-      padding: 16px 20px;
+      padding: 10px 20px;
       border-top: 1px solid #E2E8F0;
       background: white;
       gap: 12px;
@@ -356,11 +365,12 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px 24px;
+      padding: 8px 20px;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.2s ease;
       box-shadow: var(--shadow-md);
+      font-size: 12px;
     }
     
     #send-button:hover {
@@ -614,7 +624,7 @@
     localStorage.setItem('chatSessionId', sessionId);
   }
 
-  let userScrolled = false;
+  /*let userScrolled = false;
 
   messagesContainer.addEventListener('scroll', () => {
     if (messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 50) {
@@ -623,7 +633,7 @@
       userScrolled = true;
     }
   });
-
+*/
   let typingEl = null;
 
   function showTyping() {
@@ -812,12 +822,12 @@ appendMessage(html, 'bot', false);
     messagesContainer.appendChild(blockDiv);
   }
 
-  // Desplazar hacia el final del chat
+  /* Desplazar hacia el final del chat
   messagesContainer.scrollTo({
     top: messagesContainer.scrollHeight,
     behavior: 'smooth'
   });
-
+*/
   // Redirección manual de enlaces específicos
   //const linkMap = {
    // 'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
@@ -904,42 +914,43 @@ appendMessage(html, 'bot', false);
     }
     return false;
   }
+  /*
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    const allMessages = messagesContainer.querySelectorAll('.message');
+    const lastMessage = allMessages[allMessages.length - 1];
 
-  function scrollToBottom() {
-    requestAnimationFrame(() => {
-      const allMessages = messagesContainer.querySelectorAll('.message');
-      const lastMessage = allMessages[allMessages.length - 1];
-      if (lastMessage) {
-        // Posicionar el mensaje cerca del top, dejando espacio arriba
-        lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    if (lastMessage) {
+      const scrollPosition = messagesContainer.scrollTop + messagesContainer.clientHeight;
+      const lastMessagePosition = lastMessage.offsetTop + lastMessage.offsetHeight;
+
+      // Si el último mensaje está fuera de la vista (por ejemplo, debido a que se añadieron muchos mensajes)
+      if (lastMessagePosition > scrollPosition) {
+        // Desplaza el contenedor hasta el final, dejando el último mensaje visible sin sobrepasar el borde
+        messagesContainer.scrollTo({
+          top: lastMessagePosition - messagesContainer.clientHeight,
+          behavior: 'smooth'
+        });
       }
-    });
-  }
+    }
+  });
+}
+*/
+
+
 
   function appendMessage(message, sender, scroll = true) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender}-message`;
-    const p = document.createElement('p');
-    p.innerHTML = message;
-    msgDiv.appendChild(p);
-    messagesContainer.appendChild(msgDiv);
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${sender}-message`;
+  const p = document.createElement('p');
+  p.innerHTML = message;
+  msgDiv.appendChild(p);
+  messagesContainer.appendChild(msgDiv);
 
-    if (!userScrolled && scroll) {
-      requestAnimationFrame(() => {
-        const allMessages = messagesContainer.querySelectorAll('.message');
-        const lastMessage = allMessages[allMessages.length - 1];
-        if (lastMessage) {
-          // Scroll hasta justo antes del último mensaje
-          const previousMessage = allMessages[allMessages.length - 2];
-          if (previousMessage) {
-            previousMessage.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-          } else {
-            lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-          }
-        }
-      });
-    }
-  }
+  // Eliminamos el desplazamiento automático
+  // No se llama a la función que hace scroll.
+}
+
 
   sendButton.addEventListener('click', () => {
     const input = userInput.value.trim();
@@ -968,7 +979,7 @@ appendMessage(html, 'bot', false);
 
     const btn1 = document.createElement('button');
     btn1.className = 'chat-option-btn list-item-btn';
-    btn1.innerHTML = '📚 Ver preguntas frecuentes';
+    btn1.innerHTML = '📚  Ver preguntas frecuentes';
     btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
     buttonsContainer.appendChild(btn1);
 
@@ -976,15 +987,16 @@ appendMessage(html, 'bot', false);
     btn4.className = 'chat-option-btn list-item-btn';
     btn4.innerHTML = `
       <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-           alt="WhatsApp"
-           style="width:18px; height:18px; vertical-align:middle; margin-right:8px;">
+          alt="WhatsApp"
+          style="width:18px; height:18px; vertical-align:middle; margin-right:0px;">
       Chatear por WhatsApp
     `;
     btn4.href = 'https://wa.me/56986851342';
     btn4.target = '_blank';
+    btn4.style.textDecoration = 'none';  // Elimina el subrayado del enlace
     buttonsContainer.appendChild(btn4);
 
-    const btn3 = document.createElement('button');
+        const btn3 = document.createElement('button');
     btn3.className = 'chat-option-btn list-item-btn';
     btn3.innerHTML = '✉️ Envíanos tu consulta';
     btn3.onclick = () => sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
