@@ -569,6 +569,9 @@
   // Obtener los parámetros de la URL
   const params = new URLSearchParams(location.search);
   const selectedWebhook = params.get('webhook') || 'default';
+  // ¡AÑADIR ESTAS LÍNEAS!
+  const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
+  const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
 
   const WEBHOOKS = {
     default: 'https://n8n.iie.cl/webhook/chat-ciudadania',
@@ -871,22 +874,26 @@ appendMessage(html, 'bot', false);
 
     form.addEventListener('submit', async (e) => {
   e.preventDefault();  // Prevenir el comportamiento por defecto del formulario (recargar página)
-
+      
   // Obtener los valores del formulario
   const nombre = form.querySelector('[name="nombre"]').value;
   const correo = form.querySelector('[name="correo"]').value;
   const telefono = form.querySelector('[name="telefono"]').value;
   const mensaje = form.querySelector('[name="mensaje"]').value;
 
-  // Obtener las variables del curso y correo, con valores por defecto si no están disponibles
-  const nombre_curso = window.nombre_curso || 'Nombre del curso no especificado';
-  const correo_curso = window.correo_curso || 'Correo no especificado';
+ // Obtener las variables del curso y correo (leídas desde los params de la URL)
+console.log('Nombre del curso:', nombreCursoParam);
+console.log('Correo del curso:', correoCursoParam);
 
-  console.log('Nombre del curso:', nombre_curso);
-  console.log('Correo del curso:', correo_curso);
-
-  // Crear el objeto con los datos que se enviarán
-  const formData = { nombre, correo, telefono, mensaje, nombre_curso, correo_curso };
+// Crear el objeto con los datos que se enviarán
+const formData = { 
+  nombre, 
+  correo, 
+  telefono, 
+  mensaje, 
+  nombre_curso: nombreCursoParam, // Usar la variable leída de la URL
+  correo_curso: correoCursoParam  // Usar la variable leída de la URL
+};
 
   // Deshabilitar todos los campos del formulario para prevenir envíos repetidos
   const inputs = form.querySelectorAll('input, textarea, button');
@@ -921,7 +928,7 @@ appendMessage(html, 'bot', false);
     inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
   }
     });
-    
+
   }
 
   function verificarAccionEspecial(message) {
