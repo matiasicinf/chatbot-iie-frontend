@@ -558,6 +558,11 @@
   
   const params = new URLSearchParams(location.search);
   const selectedWebhook = params.get('webhook') || 'default';
+  const curso = params.get('curso');  // Ciudadanía Digital
+  const correo = params.get('correo');  // ciudadania-cpeip2025@iie.cl
+
+  console.log('Curso:', curso);  // Ciudadanía Digital
+  console.log('Correo:', correo);  // ciudadania-cpeip2025@iie.cl
 
   const WEBHOOKS = {
     default: 'https://n8n.iie.cl/webhook/chat-ciudadania',
@@ -654,37 +659,55 @@
   }
 
   async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
+    // Verificar si hay una acción especial (como la de un formulario de contacto)
     if (verificarAccionEspecial(message)) return;
     
+    // Solo agregar el mensaje si no es el mensaje inicial
     if (message !== '_INICIO') {
-      if (isButtonPayload && buttonLabel) {
-        appendMessage(buttonLabel, 'user');
-      } else {
-        appendMessage(message, 'user');
-      }
+        if (isButtonPayload && buttonLabel) {
+            appendMessage(buttonLabel, 'user');
+        } else {
+            appendMessage(message, 'user');
+        }
     }
 
+    // Limpiar el input después de enviar el mensaje
     userInput.value = '';
 
     try {
-      showTyping();
+        showTyping();
 
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: message, sessionId })
-      });
+        // Capturar los parámetros 'curso' y 'correo' de la URL del iframe
+        const urlParams = new URLSearchParams(window.location.search);
+        const curso = urlParams.get('curso');  // Ejemplo: 'Ciudadanía Digital'
+        const correo = urlParams.get('correo');  // Ejemplo: 'ciudadania-cpeip2025@iie.cl'
 
-      const data = await response.json();
+        // Crear el objeto con los datos necesarios para el webhook
+        const messageData = {
+            chatInput: message, // El mensaje que el usuario ha enviado
+            sessionId: sessionId, // ID de la sesión
+            curso: curso, // Nombre del curso (dinámico desde la URL)
+            correo: correo  // Correo del curso (dinámico desde la URL)
+        };
 
-      hideTyping();
-      renderResponse(data);
-    } catch {
-      // hideTyping();
-     //  appendMessage("Lo siento, hubo un error de conexión.", 'bot');
+        // Enviar la solicitud al webhook con los datos del mensaje y los parámetros dinámicos
+        const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(messageData)  // Enviar los datos como JSON
+        });
+
+        const data = await response.json();  // Respuesta del webhook
+
+        hideTyping();
+        renderResponse(data);  // Renderizar la respuesta del webhook
+
+    } catch (error) {
+        hideTyping();
+        appendMessage("Lo siento, hubo un error de conexión.", 'bot');
     }
-  }
-  
+}
+
 
   function renderResponse(data) {
   let text = data.text || "...";
