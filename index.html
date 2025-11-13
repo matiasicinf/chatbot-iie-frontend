@@ -78,19 +78,19 @@
 
     /* ======== HEADER MODERNO ======== */
     #chat-header {
-      background: linear-gradient(135deg, #006D9C 0%, #009FD6 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 20px;
-      min-height: 72px;
-      height: 72px;
-      box-shadow: 0 4px 12px rgba(0, 109, 156, 0.15);
-      position: relative;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
+  background: linear-gradient(135deg, #006D9C 0%, #009FD6 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px; /* Reduce el padding para hacerlo más compacto */
+  height: auto; /* Elimina la altura fija para permitir adaptación */
+  min-height: 50px; /* Ajusta el valor de la altura mínima */
+  box-shadow: 0 4px 12px rgba(0, 109, 156, 0.15);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
     
     #chat-header::before {
       content: '';
@@ -239,6 +239,20 @@
         transform: translateY(0);
       }
     }
+    /* Estilo para los enlaces generados por markdown */
+    .bot-message a.chat-link {
+      color: #1a0dab!important;  /* Asegura que todos los enlaces tengan el mismo color */
+      font-weight: normal !important;  /* Elimina la negrita */
+      /*text-decoration: none;  /* Elimina el subrayado de los enlaces */
+      border-bottom: 1px solid #1a0dab; /* Línea azul debajo del enlace */
+    }
+
+    /* Cambiar el color al pasar el mouse (hover) */
+    .bot-message a.chat-link:hover {
+      color: #1a0dab;  /* Mantener el mismo color al hacer hover */
+      border-bottom: 1px solid #1a0dab; /* Mantener la misma línea de color azul al pasar el mouse */
+    }
+
 
     .message p {
       margin: 0;
@@ -263,7 +277,7 @@
       border-bottom-left-radius: 4px;
       border: 1px solid #E2E8F0;
     }
-
+    
     .bot-options-list {
       display: flex;
       flex-direction: column;
@@ -482,6 +496,26 @@
       margin-bottom: 8px;
       font-family: inherit;
     }
+    @media (max-width: 600px) {
+      #chat-header {
+        padding: 8px 12px; /* Menos padding para pantallas más pequeñas */
+        min-height: 40px;   /* Ajusta la altura mínima */
+      }
+
+      .chat-logo {
+        width: 32px; /* Reduzco el tamaño del logo */
+        height: 32px;
+      }
+
+      .chat-title {
+        font-size: 0.9rem; /* Ajusto el tamaño del texto */
+      }
+
+      .chat-subtitle {
+        font-size: 0.7rem; /* Ajusto el tamaño del texto */
+      }
+    }
+
   </style>
 </head>
 
@@ -650,31 +684,83 @@
       appendMessage("Lo siento, hubo un error de conexión.", 'bot');
     }
   }
+  
 
   function renderResponse(data) {
   let text = data.text || "...";
+  
 
   marked.setOptions({
     breaks: true,
     gfm: true
   });
 
-  // Convertir Markdown a HTML y agregar formato automático
-  let html = marked.parse(text);
-  html = html.replace(
-    /(?<!href="mailto:)([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
-    '<a href="mailto:$1" class="chat-link">$1</a>'
-  )
-  .replace(
-    /(?<!href="tel:)(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
-    '<a href="tel:$1" class="chat-link">$1</a>'
-  )
-  .replace(
-    /(?<!href=")(https?:\/\/[^\s<]+)/g,
-    '<a href="$1" target="_blank" class="chat-link">$1</a>'
-  );
 
-  appendMessage(html, 'bot', false);
+let html = marked.parse(text);
+
+// ******* 1. EVITAR VÍNCULOS EN CORREOS ELECTRÓNICOS (Lógica existente) *******
+html = html.replace(
+  /(\+56\s?9[\s-]?\d{4}[\s-]?\d{4})/g,  // Modificado para que capture el +56 con el número
+  function(match) {
+    // 1. Elimina todos los caracteres no numéricos del número capturado, pero mantenemos el +56
+    let phoneNumber = match.replace(/\D/g, "");  // Elimina todos los caracteres no numéricos
+    
+    // 2. Aseguramos que el número empieza con 56 y lo mantiene
+    if (phoneNumber.startsWith("56")) {
+      // No se necesita añadir nada si ya tiene el 56
+    } else {
+      // Si el número comienza con +569 o con solo 9, lo corregimos a 56
+      phoneNumber = "56" + phoneNumber.slice(1); 
+    }
+    
+    // 3. Crea la URL usando el número de 11 dígitos limpio (569XXXXXXXX)
+    const waUrl = `https://wa.me/${phoneNumber}`;  // Ahora está correcto
+    
+    // 4. Devuelve el enlace con el número completo como texto
+    return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;  // Hace que todo el número sea un enlace
+  }
+);
+
+
+
+// ******* 2. URLS GENERALES *******
+// Ahora las URLs se redirigen correctamente
+html = html.replace(
+  /(?<!href=")(https?:\/\/[^\s<]+)/g,
+  '<a href="$1" target="_blank" class="chat-link">$1</a>' // Para las URLs también
+);
+html = html.replace(
+  /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,  // Para números fijos
+  function(match) {
+    let phoneNumber = match.replace(/\D/g, "");  // Elimina caracteres no numéricos
+
+    // Si no es móvil (no empieza con 9, +569 o 56), lo tratamos como un número fijo
+    if (!phoneNumber.startsWith("56") && !phoneNumber.startsWith("9") && !phoneNumber.startsWith("+569")) {
+      const telUrl = `tel:${phoneNumber}`;  // Enlace de llamada
+      return `<a href="${telUrl}" class="chat-link chat-link-standard">${match}</a>`;  // Mostrar enlace de llamada
+    }
+
+    // Si es un número móvil, lo dejamos sin cambios
+    return match;
+  }
+);
+
+// ******* 3. AGREGAR LOGICA DE TELEFONO FIJO (Recomendado) *******
+// Si quieres que los fijos como 228407014 también sean enlaces de llamada, 
+// puedes añadir la siguiente RegEx, ya que no serán atrapados por la de WhatsApp.
+/*
+html = html.replace(
+    /(?<!href="tel:)(?<!href=")(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
+    '<a href="tel:$1" class="chat-link chat-link-standard">$1</a>'
+);
+*/
+
+appendMessage(html, 'bot', false);
+
+
+
+// ...
+
 
   // Bloque combinado: texto extra + botones dentro del mismo contenedor
   if (data.extra || (data.buttons && data.buttons.length)) {
@@ -733,11 +819,11 @@
   });
 
   // Redirección manual de enlaces específicos
-  const linkMap = {
-    'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
-    'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
-    'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
-  };
+  //const linkMap = {
+   // 'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
+   // 'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
+   // 'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
+  //};
 
   document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
     const href = link.getAttribute('href');
