@@ -677,22 +677,21 @@
   appendMessage(html, 'bot', false);
 
   // Bloque combinado: texto extra + botones dentro del mismo contenedor
-  if (data.extra) {
+  if (data.extra || (data.buttons && data.buttons.length)) {
+    const blockDiv = document.createElement('div');
+    blockDiv.className = 'message bot-message';
+
+    if (data.extra) {
   const p = document.createElement('p');
   p.innerHTML = marked.parse(data.extra);
   blockDiv.appendChild(p);
 
-  // Crear la barra (hr)
+  // Usar un borde discreto o barra con menos espacio
   const hr = document.createElement('hr');
-  hr.style.border = "1px solid #E2E8F0";  // Barra discreta
-  hr.style.margin = "5px 0";  // Espaciado arriba y abajo de la barra
-
-  // Aumentar espacio debajo de la barra
-  hr.style.marginBottom = '15px';  // Ajusta este valor para el espacio debajo
-
+  hr.style.border = "1px solid #E2E8F0";  // Barra sutil
+  hr.style.margin = "8px 0";  // Ajuste de espacio alrededor de la barra
   blockDiv.appendChild(hr);
 }
-
 
 
 
@@ -747,7 +746,7 @@
       link.setAttribute('target', '_blank'); // abrir en nueva pestaña
     }
   });
-
+}
 
 
   async function mostrarFormularioContacto() {
