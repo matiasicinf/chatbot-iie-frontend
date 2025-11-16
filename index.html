@@ -593,12 +593,16 @@ function setTitulo(valor) {
 function setPregunta(valor) {
   sessionStorage.setItem('chat_pregunta', valor);
 }
+function setAula(valor) {
+  sessionStorage.setItem('chat_aula', valor);
+}
 
 function resetVariablesOcultas() {
   sessionStorage.setItem('chat_categoria', null);
   sessionStorage.setItem('chat_subcategoria', null);
   sessionStorage.setItem('chat_titulo', null);
   sessionStorage.setItem('chat_pregunta', null);
+  sessionStorage.setItem('chat_aula', null);
 }
 
 // =========================================================
@@ -625,6 +629,11 @@ function actualizarVariablesAutomaticas(message) {
     setPregunta(message.replace("PRE_", "").trim());
     return;
   }
+  if (message.startsWith("AUL_")) {
+  setAula(message.replace("AUL_", "").trim());
+  return;
+  }
+
 
   // Texto libre = se guarda como pregunta
   setPregunta(message);
@@ -761,7 +770,8 @@ function actualizarVariablesAutomaticas(message) {
         categoria: sessionStorage.getItem('chat_categoria'),
         subcategoria: sessionStorage.getItem('chat_subcategoria'),
         titulo: sessionStorage.getItem('chat_titulo'),
-        pregunta: sessionStorage.getItem('chat_pregunta')
+        pregunta: sessionStorage.getItem('chat_pregunta'),
+        aula: sessionStorage.getItem('chat_aula') 
       })
       });
 
