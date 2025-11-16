@@ -565,6 +565,72 @@
   </div>
 
   <script>
+   // =========================================================
+// 0) VARIABLES OCULTAS — Se crean al cargar la página
+// =========================================================
+if (!sessionStorage.getItem('chat_categoria')) {
+  sessionStorage.setItem('chat_categoria', null);
+  sessionStorage.setItem('chat_subcategoria', null);
+  sessionStorage.setItem('chat_titulo', null);
+  sessionStorage.setItem('chat_pregunta', null);
+}
+
+// =========================================================
+// 1) FUNCIONES PARA GUARDAR VARIABLES OCULTAS
+// =========================================================
+function setCategoria(valor) {
+  sessionStorage.setItem('chat_categoria', valor);
+}
+
+function setSubcategoria(valor) {
+  sessionStorage.setItem('chat_subcategoria', valor);
+}
+
+function setTitulo(valor) {
+  sessionStorage.setItem('chat_titulo', valor);
+}
+
+function setPregunta(valor) {
+  sessionStorage.setItem('chat_pregunta', valor);
+}
+
+function resetVariablesOcultas() {
+  sessionStorage.setItem('chat_categoria', null);
+  sessionStorage.setItem('chat_subcategoria', null);
+  sessionStorage.setItem('chat_titulo', null);
+  sessionStorage.setItem('chat_pregunta', null);
+}
+
+// =========================================================
+// 2) ACTUALIZADOR AUTOMÁTICO SEGÚN PAYLOAD
+// =========================================================
+function actualizarVariablesAutomaticas(message) {
+
+  if (message.startsWith("CAT_")) {
+    setCategoria(message.replace("CAT_", "").trim());
+    return;
+  }
+
+  if (message.startsWith("SUBCAT_")) {
+    setSubcategoria(message.replace("SUBCAT_", "").trim());
+    return;
+  }
+
+  if (message.startsWith("TIT_")) {
+    setTitulo(message.replace("TIT_", "").trim());
+    return;
+  }
+
+  if (message.startsWith("PRE_")) {
+    setPregunta(message.replace("PRE_", "").trim());
+    return;
+  }
+
+  // Texto libre = se guarda como pregunta
+  setPregunta(message);
+}
+
+
 
   // Obtener los parámetros de la URL
   const params = new URLSearchParams(location.search);
@@ -616,6 +682,7 @@
 
   if (restartBtn) {
     restartBtn.addEventListener('click', () => {
+      resetVariablesOcultas();
       messagesContainer.innerHTML = '';
       initialMessage(); 
     });
@@ -668,7 +735,8 @@
 
   async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
     if (verificarAccionEspecial(message)) return;
-    
+    actualizarVariablesAutomaticas(message);
+
     if (message !== '_INICIO') {
       if (isButtonPayload && buttonLabel) {
         appendMessage(buttonLabel, 'user');
@@ -685,7 +753,16 @@
       const response = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatInput: message, sessionId })
+        body: JSON.stringify({
+        chatInput: message,
+        sessionId: sessionId,
+
+        // Variables invisibles
+        categoria: sessionStorage.getItem('chat_categoria'),
+        subcategoria: sessionStorage.getItem('chat_subcategoria'),
+        titulo: sessionStorage.getItem('chat_titulo'),
+        pregunta: sessionStorage.getItem('chat_pregunta')
+      })
       });
 
       const data = await response.json();
