@@ -765,6 +765,7 @@ function actualizarVariablesAutomaticas(message) {
         body: JSON.stringify({
         chatInput: message,
         sessionId: sessionId,
+        idMoodle: obtenerIdMoodle(),
 
         // Variables invisibles
         categoria: sessionStorage.getItem('chat_categoria'),
@@ -1048,6 +1049,29 @@ function scrollToBottom() {
 }
 */
 
+
+function obtenerIdMoodle() {
+  try {
+    const label = [...document.querySelectorAll("dt")]
+      .find(el => el.innerText.trim() === "Número de ID");
+
+    if (!label) return null;
+
+    const dd = label.nextElementSibling;
+    if (!dd) return null;
+
+    // Capturar el texto generado por CSS (::before)
+    const beforeValue = window.getComputedStyle(dd, '::before').getPropertyValue('content');
+
+    // Quitar comillas del content: "13.606.861-k"
+    const cleaned = beforeValue.replace(/"/g, "").trim();
+
+    return cleaned || null;
+
+  } catch (e) {
+    return null;
+  }
+}
 
 
   function appendMessage(message, sender, scroll = true) {
