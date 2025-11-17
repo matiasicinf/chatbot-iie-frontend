@@ -1052,26 +1052,25 @@ function scrollToBottom() {
 
 function obtenerIdMoodle() {
   try {
-    const label = [...document.querySelectorAll("dt")]
-      .find(el => el.innerText.trim() === "Número de ID");
+    const body = document.body;
+    if (!body) return null;
 
-    if (!label) return null;
+    // Buscar en las clases del body algo como "usercontext-123456"
+    const clases = body.className.split(/\s+/);
 
-    const dd = label.nextElementSibling;
-    if (!dd) return null;
+    const claseUsuario = clases.find(c => c.startsWith("usercontext-"));
+    if (!claseUsuario) return null;
 
-    // Capturar el texto generado por CSS (::before)
-    const beforeValue = window.getComputedStyle(dd, '::before').getPropertyValue('content');
+    // Extraer el número
+    const id = claseUsuario.replace("usercontext-", "").trim();
 
-    // Quitar comillas del content: "13.606.861-k"
-    const cleaned = beforeValue.replace(/"/g, "").trim();
-
-    return cleaned || null;
+    return id || null;
 
   } catch (e) {
     return null;
   }
 }
+
 
 
   function appendMessage(message, sender, scroll = true) {
