@@ -643,8 +643,6 @@ function actualizarVariablesAutomaticas(message) {
 
   // Obtener los parámetros de la URL
   const params = new URLSearchParams(location.search);
-  const rutUsuarioParam = params.get('rut') || null;
-
   const selectedWebhook = params.get('webhook') || 'default';
   // ¡AÑADIR ESTAS LÍNEAS!
   const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
@@ -767,8 +765,7 @@ function actualizarVariablesAutomaticas(message) {
         body: JSON.stringify({
         chatInput: message,
         sessionId: sessionId,
-        idMoodle: obtenerIdMoodle(),
-        rutUsuario: rutUsuarioParam,
+
         // Variables invisibles
         categoria: sessionStorage.getItem('chat_categoria'),
         subcategoria: sessionStorage.getItem('chat_subcategoria'),
@@ -1050,28 +1047,6 @@ function scrollToBottom() {
   });
 }
 */
-
-
-function obtenerIdMoodle() {
-  try {
-    const body = document.body;
-    if (!body) return null;
-
-    // Buscar en las clases del body algo como "usercontext-123456"
-    const clases = body.className.split(/\s+/);
-
-    const claseUsuario = clases.find(c => c.startsWith("usercontext-"));
-    if (!claseUsuario) return null;
-
-    // Extraer el número
-    const id = claseUsuario.replace("usercontext-", "").trim();
-
-    return id || null;
-
-  } catch (e) {
-    return null;
-  }
-}
 
 
 
