@@ -902,7 +902,8 @@ appendMessage(html, 'bot', false);
         }
 
         btn.className = 'chat-option-btn list-item-btn';
-        btn.textContent = button.label;
+       // btn.textContent = button.label;
+        btn.innerHTML = marked.parse(button.label);
         buttonsContainer.appendChild(btn);
       });
 
@@ -918,12 +919,7 @@ appendMessage(html, 'bot', false);
     behavior: 'smooth'
   });
 */
-  // Redirección manual de enlaces específicos
-  //const linkMap = {
-   // 'mailto:ciudadania-cpeip2025@iie.cl': 'https://iie.cl/soporte',
-   // 'https://wa.me/56986851342': 'https://wa.me/56986851342?text=Hola%20Asistente%20Virtual%20IIE',
-   // 'https://iie.cl': 'https://www.iie.cl/cursos-ciudadania'
-  //};
+
 
   document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
     const href = link.getAttribute('href');
