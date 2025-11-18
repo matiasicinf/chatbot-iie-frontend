@@ -845,16 +845,6 @@ html = html.replace(
   }
 );
 
-// ******* 3. AGREGAR LOGICA DE TELEFONO FIJO (Recomendado) *******
-// Si quieres que los fijos como 228407014 también sean enlaces de llamada, 
-// puedes añadir la siguiente RegEx, ya que no serán atrapados por la de WhatsApp.
-/*
-html = html.replace(
-    /(?<!href="tel:)(?<!href=")(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
-    '<a href="tel:$1" class="chat-link chat-link-standard">$1</a>'
-);
-*/
-
 appendMessage(html, 'bot', false);
 
 
@@ -913,13 +903,34 @@ appendMessage(html, 'bot', false);
     messagesContainer.appendChild(blockDiv);
   }
 
-  /* Desplazar hacia el final del chat
-  messagesContainer.scrollTo({
+   //Desplazar hacia el final del chat
+  /*messagesContainer.scrollTo({
     top: messagesContainer.scrollHeight,
     behavior: 'smooth'
-  });
-*/
+  });*/
+  // Desplazar hacia el final del chat
+// Buscar el último mensaje del usuario
+const allMessages = messagesContainer.querySelectorAll('.message');
+let lastUserMessage = null;
 
+// Recorrer desde el final para encontrar el último user-message
+for (let i = allMessages.length - 1; i >= 0; i--) {
+    if (allMessages[i].classList.contains('user-message')) {
+      lastUserMessage = allMessages[i];
+      break;
+    }
+  }
+
+  // Si encontramos un mensaje del usuario, hacer scroll hasta él
+  if (lastUserMessage) {
+    requestAnimationFrame(() => {
+      lastUserMessage.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',  // Esto lo posiciona en la parte superior
+        inline: 'nearest' 
+      });
+    });
+  }
 
   document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
     const href = link.getAttribute('href');
@@ -1021,6 +1032,11 @@ const formData = {
     }
     return false;
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //NO ERA ESTO
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
   /*
 function scrollToBottom() {
   requestAnimationFrame(() => {
