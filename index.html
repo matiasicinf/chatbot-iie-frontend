@@ -644,13 +644,24 @@ function actualizarVariablesAutomaticas(message) {
   // Obtener los parámetros de la URL
   const params = new URLSearchParams(location.search);
   const selectedWebhook = params.get('webhook') || 'default';
-  // ¡AÑADIR ESTAS LÍNEAS!
   const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
   const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
 
   const WEBHOOKS = {
-    default: 'https://n8n.iie.cl/webhook/chat-ciudadania',
+    default: 'https://n8n.iie.cl/webhook/ciudadania-digital',
     curso1:  'https://n8n.iie.cl/webhook/ciberacoso',
+    curso2:  'https://n8n.iie.cl/webhook/ciudadania-digital',
+    curso3:  'https://n8n.iie.cl/webhook/disena-tu-clase',
+    curso4:  'https://n8n.iie.cl/webhook/tecnologias-digitales',
+    curso5:  'https://n8n.iie.cl/webhook/tecnicas-de-aprendizaje-activo',
+    curso6:  'https://n8n.iie.cl/webhook/aprendizaje-basado-en-proyectos',
+    curso7:  'https://n8n.iie.cl/webhook/ciencias-naturales-con-tic',
+    curso8:  'https://n8n.iie.cl/webhook/artes-con-tic',
+    curso9:  'https://n8n.iie.cl/webhook/lenguaje-con-tic',
+    curso10:  'https://n8n.iie.cl/webhook/evaluacion-y-retroalimentacion-de-aprendizajes',
+    curso11:  'https://n8n.iie.cl/webhook/diseno-de-presentaciones',
+    curso12:  'https://n8n.iie.cl/webhook/programacion-y-pensamiento-computacional-iii-iv',
+    curso13:  'https://n8n.iie.cl/webhook/bases-curriculares-lengua-y-cultura-mapuche',
   };
 
   const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
@@ -703,16 +714,6 @@ function actualizarVariablesAutomaticas(message) {
     localStorage.setItem('chatSessionId', sessionId);
   }
 
-  /*let userScrolled = false;
-
-  messagesContainer.addEventListener('scroll', () => {
-    if (messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 50) {
-      userScrolled = false;
-    } else {
-      userScrolled = true;
-    }
-  });
-*/
   let typingEl = null;
 
   function showTyping() {
@@ -787,6 +788,8 @@ function actualizarVariablesAutomaticas(message) {
   
 
   function renderResponse(data) {
+  if (data.ignore) return;
+
   let text = data.text || "...";
   
 
@@ -820,8 +823,6 @@ html = html.replace(
     return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;  // Hace que todo el número sea un enlace
   }
 );
-
-
 
 // ******* 2. URLS GENERALES *******
 // Ahora las URLs se redirigen correctamente
@@ -903,12 +904,6 @@ appendMessage(html, 'bot', false);
     messagesContainer.appendChild(blockDiv);
   }
 
-   //Desplazar hacia el final del chat
-  /*messagesContainer.scrollTo({
-    top: messagesContainer.scrollHeight,
-    behavior: 'smooth'
-  });*/
-  // Desplazar hacia el final del chat
 // Buscar el último mensaje del usuario
 const allMessages = messagesContainer.querySelectorAll('.message');
 let lastUserMessage = null;
@@ -1033,35 +1028,6 @@ const formData = {
     return false;
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //NO ERA ESTO
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
-  /*
-function scrollToBottom() {
-  requestAnimationFrame(() => {
-    const allMessages = messagesContainer.querySelectorAll('.message');
-    const lastMessage = allMessages[allMessages.length - 1];
-
-    if (lastMessage) {
-      const scrollPosition = messagesContainer.scrollTop + messagesContainer.clientHeight;
-      const lastMessagePosition = lastMessage.offsetTop + lastMessage.offsetHeight;
-
-      // Si el último mensaje está fuera de la vista (por ejemplo, debido a que se añadieron muchos mensajes)
-      if (lastMessagePosition > scrollPosition) {
-        // Desplaza el contenedor hasta el final, dejando el último mensaje visible sin sobrepasar el borde
-        messagesContainer.scrollTo({
-          top: lastMessagePosition - messagesContainer.clientHeight,
-          behavior: 'smooth'
-        });
-      }
-    }
-  });
-}
-*/
-
-
-
   function appendMessage(message, sender, scroll = true) {
   const msgDiv = document.createElement('div');
   msgDiv.className = `message ${sender}-message`;
@@ -1109,20 +1075,37 @@ function scrollToBottom() {
     const btn4 = document.createElement('a');
     btn4.className = 'chat-option-btn list-item-btn';
     btn4.innerHTML = `
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
           alt="WhatsApp"
           style="width:18px; height:18px; vertical-align:middle; margin-right:0px;">
-      Chatear por WhatsApp
-    `;
-    btn4.href = 'https://wa.me/56986851342';
-    btn4.target = '_blank';
+        Chatear por WhatsApp`;
+    //btn4.href = 'https://wa.me/56986851342';
+    //btn4.target = '_blank';
+    btn4.onclick = () => {
+      // Solo enviamos métrica a n8n
+      sendMessage("BTN_WSP", true, "Chatear por WhatsApp");
+
+      // Abrimos el WhatsApp REAL
+      setTimeout(() => {
+        window.open("https://wa.me/56986851342", "_blank");
+      }, 200);
+    };
     btn4.style.textDecoration = 'none';  // Elimina el subrayado del enlace
     buttonsContainer.appendChild(btn4);
 
-        const btn3 = document.createElement('button');
+    const btn3 = document.createElement('button');
     btn3.className = 'chat-option-btn list-item-btn';
     btn3.innerHTML = '✉️ Envíanos tu consulta';
-    btn3.onclick = () => sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
+    btn3.onclick = () => {
+      // 1) Enviar métrica al backend
+      sendMessage('BTN_CORREO', true, '✉️ Envíanos tu consulta');
+
+      // 2) Ejecutar la acción normal del botón
+      setTimeout(() => {
+        sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
+      }, 200);
+    };
+
     buttonsContainer.appendChild(btn3);
 
     blockDiv.appendChild(buttonsContainer);
