@@ -750,7 +750,7 @@ function actualizarVariablesAutomaticas(message) {
 
     if (message !== '_INICIO') {
       if (isButtonPayload && buttonLabel) {
-        appendMessage(buttonLabel, 'user');
+        appendMessage(htmlLabel, 'user');
       } else {
         appendMessage(message, 'user');
       }
