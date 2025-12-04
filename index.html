@@ -750,6 +750,8 @@ function actualizarVariablesAutomaticas(message) {
 
     if (message !== '_INICIO') {
       if (isButtonPayload && buttonLabel) {
+
+        const htmlLabel = marked.parseInline(buttonLabel);
         appendMessage(htmlLabel, 'user');
       } else {
         appendMessage(message, 'user');
