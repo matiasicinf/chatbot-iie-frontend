@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Chatbot IIE Personalizado</title>
@@ -10,7 +11,7 @@
       --chat--color--primary-hover: #005580;
       --chat--color--secondary: #A1D5EB;
       --chat--color-secondary-shade-50: #F1F5F9;
-      --chat--color-light: #FFFFFF;   
+      --chat--color-light: #FFFFFF;
       --chat--color--primary-shade-50: #2299C5;
       --chat--color--primary--shade-100: #2299C5;
       --chat--color-white: #FFFFFF;
@@ -23,18 +24,20 @@
       --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
       --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    
+
     * {
       box-sizing: border-box;
     }
-    
-    body, input, button {
+
+    body,
+    input,
+    button {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 14px;
       margin: 0;
       padding: 0;
     }
-    
+
     /* ======== BOTÓN FLOTANTE ======== */
     #chat-toggle {
       position: fixed;
@@ -55,7 +58,7 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 3px solid rgba(255, 255, 255, 0.2);
     }
-    
+
     #chat-toggle:hover {
       transform: scale(1.1);
       box-shadow: 0 25px 50px -12px rgba(0, 109, 156, 0.5);
@@ -78,20 +81,23 @@
 
     /* ======== HEADER MODERNO ======== */
     #chat-header {
-  background: linear-gradient(135deg, #006D9C 0%, #009FD6 100%);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px; /* Reduce el padding para hacerlo más compacto */
-  height: auto; /* Elimina la altura fija para permitir adaptación */
-  min-height: 50px; /* Ajusta el valor de la altura mínima */
-  box-shadow: 0 4px 12px rgba(0, 109, 156, 0.15);
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-    
+      background: linear-gradient(135deg, #006D9C 0%, #009FD6 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      /* Reduce el padding para hacerlo más compacto */
+      height: auto;
+      /* Elimina la altura fija para permitir adaptación */
+      min-height: 50px;
+      /* Ajusta el valor de la altura mínima */
+      box-shadow: 0 4px 12px rgba(0, 109, 156, 0.15);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
     #chat-header::before {
       content: '';
       position: absolute;
@@ -99,7 +105,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
       pointer-events: none;
     }
 
@@ -124,7 +130,7 @@
       cursor: pointer;
       flex-shrink: 0;
     }
-    
+
     .chat-logo:hover {
       transform: scale(1.15);
     }
@@ -151,7 +157,7 @@
       gap: 6px;
       font-weight: 500;
     }
-    
+
     .status-dot {
       display: inline-block;
       width: 8px;
@@ -161,10 +167,17 @@
       box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
       animation: pulse 2s infinite;
     }
-    
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
     }
 
     .chat-header-right {
@@ -173,7 +186,7 @@
       position: relative;
       z-index: 1;
     }
-    
+
     .chat-header-right img {
       cursor: pointer;
       filter: brightness(0) invert(1);
@@ -182,10 +195,12 @@
       border-radius: 8px;
       background: rgba(255, 255, 255, 0.15);
       opacity: 0.95;
-      width: 34px; /* Ajusta el tamaño deseado */
-      height: 34px; /* Ajusta el tamaño deseado */
+      width: 34px;
+      /* Ajusta el tamaño deseado */
+      height: 34px;
+      /* Ajusta el tamaño deseado */
     }
-    
+
     .chat-header-right img:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: scale(1.1);
@@ -200,20 +215,20 @@
       background: linear-gradient(to bottom, #F8FAFC 0%, #F1F5F9 100%);
       scroll-behavior: smooth;
     }
-    
+
     #messages-container::-webkit-scrollbar {
       width: 6px;
     }
-    
+
     #messages-container::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     #messages-container::-webkit-scrollbar-thumb {
       background: #CBD5E1;
       border-radius: 3px;
     }
-    
+
     #messages-container::-webkit-scrollbar-thumb:hover {
       background: #94A3B8;
     }
@@ -228,29 +243,36 @@
       animation: slideIn 0.3s ease-out;
       box-shadow: var(--shadow-sm);
     }
-    
+
     @keyframes slideIn {
       from {
         opacity: 0;
         transform: translateY(10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
     /* Estilo para los enlaces generados por markdown */
     .bot-message a.chat-link {
-      color: #1a0dab!important;  /* Asegura que todos los enlaces tengan el mismo color */
-      font-weight: normal !important;  /* Elimina la negrita */
+      color: #1a0dab !important;
+      /* Asegura que todos los enlaces tengan el mismo color */
+      font-weight: normal !important;
+      /* Elimina la negrita */
       /*text-decoration: none;  /* Elimina el subrayado de los enlaces */
-      border-bottom: 1px solid #1a0dab; /* Línea azul debajo del enlace */
+      border-bottom: 1px solid #1a0dab;
+      /* Línea azul debajo del enlace */
     }
 
     /* Cambiar el color al pasar el mouse (hover) */
     .bot-message a.chat-link:hover {
-      color: #1a0dab;  /* Mantener el mismo color al hacer hover */
-      border-bottom: 1px solid #1a0dab; /* Mantener la misma línea de color azul al pasar el mouse */
+      color: #1a0dab;
+      /* Mantener el mismo color al hacer hover */
+      border-bottom: 1px solid #1a0dab;
+      /* Mantener la misma línea de color azul al pasar el mouse */
     }
 
 
@@ -277,7 +299,7 @@
       border-bottom-left-radius: 4px;
       border: 1px solid #E2E8F0;
     }
-    
+
     .bot-options-list {
       display: flex;
       flex-direction: column;
@@ -319,20 +341,27 @@
       transform: translateY(-2px);
       box-shadow: var(--shadow-md);
     }
-    
+
     .chat-option-btn.list-item-btn:active {
       transform: translateY(0);
     }
+
     .chat-option-btn.list-item-btn a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;  /* Elimina la línea debajo del ícono */
-}
-.chat-option-btn.list-item-btn img {
-  vertical-align: middle; /* Alinea el ícono de WhatsApp con el texto */
-  width: 18px; /* Ajusta el tamaño del ícono */
-  height: 18px; /* Ajusta el tamaño del ícono */
-}
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      /* Elimina la línea debajo del ícono */
+    }
+
+    .chat-option-btn.list-item-btn img {
+      vertical-align: middle;
+      /* Alinea el ícono de WhatsApp con el texto */
+      width: 18px;
+      /* Ajusta el tamaño del ícono */
+      height: 18px;
+      /* Ajusta el tamaño del ícono */
+    }
+
     /* ======== ÁREA DE INPUT ======== */
     #input-area {
       display: flex;
@@ -352,7 +381,7 @@
       transition: all 0.2s ease;
       background: #F8FAFC;
     }
-    
+
     #user-input:focus {
       outline: none;
       border-color: var(--chat--color--primary);
@@ -372,12 +401,12 @@
       box-shadow: var(--shadow-md);
       font-size: 12px;
     }
-    
+
     #send-button:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-    
+
     #send-button:active {
       transform: translateY(0);
     }
@@ -440,12 +469,27 @@
       animation: typing-blink 1.2s infinite;
     }
 
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
 
     @keyframes typing-blink {
-      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-      40% { opacity: 1; transform: scale(1.1); }
+
+      0%,
+      80%,
+      100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+
+      40% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
     }
 
     /* ======== FORMULARIO ======== */
@@ -456,7 +500,7 @@
       margin-top: 12px;
       transition: opacity 0.6s ease;
     }
-    
+
     #contact-form input,
     #contact-form textarea {
       padding: 12px 16px;
@@ -467,7 +511,7 @@
       transition: all 0.2s ease;
       background: #F8FAFC;
     }
-    
+
     #contact-form input:focus,
     #contact-form textarea:focus {
       outline: none;
@@ -475,12 +519,12 @@
       background: white;
       box-shadow: 0 0 0 3px rgba(0, 109, 156, 0.1);
     }
-    
+
     #contact-form textarea {
       min-height: 100px;
       resize: vertical;
     }
-    
+
     #contact-form button[type="submit"] {
       background: linear-gradient(135deg, #006D9C 0%, #009FD6 100%);
       color: white;
@@ -493,12 +537,12 @@
       font-size: 15px;
       box-shadow: var(--shadow-md);
     }
-    
+
     #contact-form button[type="submit"]:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
-    
+
     .form-title {
       font-weight: 700;
       font-size: 1.25em;
@@ -506,26 +550,31 @@
       margin-bottom: 8px;
       font-family: inherit;
     }
+
     @media (max-width: 600px) {
       #chat-header {
-        padding: 8px 12px; /* Menos padding para pantallas más pequeñas */
-        min-height: 40px;   /* Ajusta la altura mínima */
+        padding: 8px 12px;
+        /* Menos padding para pantallas más pequeñas */
+        min-height: 40px;
+        /* Ajusta la altura mínima */
       }
 
       .chat-logo {
-        width: 32px; /* Reduzco el tamaño del logo */
+        width: 32px;
+        /* Reduzco el tamaño del logo */
         height: 32px;
       }
 
       .chat-title {
-        font-size: 0.9rem; /* Ajusto el tamaño del texto */
+        font-size: 0.9rem;
+        /* Ajusto el tamaño del texto */
       }
 
       .chat-subtitle {
-        font-size: 0.7rem; /* Ajusto el tamaño del texto */
+        font-size: 0.7rem;
+        /* Ajusto el tamaño del texto */
       }
     }
-
   </style>
 </head>
 
@@ -533,8 +582,8 @@
   <div id="custom-chat-widget">
     <div id="chat-header">
       <div class="chat-header-left">
-        <img src="https://i.ibb.co/Cpg533kX/Asitente-Virtual.png"
-         alt="Operadora IIE" class="chat-logo" loading="lazy" />
+        <img src="https://i.ibb.co/Cpg533kX/Asitente-Virtual.png" alt="Operadora IIE" class="chat-logo"
+          loading="lazy" />
         <div class="chat-title-box">
           <h3 class="chat-title">Asistente Virtual</h3>
           <p class="chat-subtitle">
@@ -545,14 +594,10 @@
       </div>
 
       <div class="chat-header-right">
-        <img src="https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg"
-             id="restart-chat"
-             alt="Reiniciar"
-             title="Reiniciar conversación" />
-        <img src="https://unpkg.com/lucide-static@latest/icons/x.svg"
-             id="minimize-chat"
-             alt="Cerrar"
-             title="Cerrar ventana" />
+        <img src="https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg" id="restart-chat" alt="Reiniciar"
+          title="Reiniciar conversación" />
+        <img src="https://unpkg.com/lucide-static@latest/icons/x.svg" id="minimize-chat" alt="Cerrar"
+          title="Cerrar ventana" />
       </div>
     </div>
 
@@ -565,386 +610,426 @@
   </div>
 
   <script>
-   // =========================================================
-// 0) VARIABLES OCULTAS — Se crean al cargar la página
-// =========================================================
-if (!sessionStorage.getItem('chat_categoria')) {
-  sessionStorage.setItem('chat_categoria', null);
-  sessionStorage.setItem('chat_subcategoria', null);
-  sessionStorage.setItem('chat_titulo', null);
-  sessionStorage.setItem('chat_pregunta', null);
-}
+    // =========================================================
+    // 0) VARIABLES OCULTAS — Se crean al cargar la página
+    // =========================================================
+    if (!sessionStorage.getItem('chat_categoria')) {
+      sessionStorage.setItem('chat_categoria', null);
+      sessionStorage.setItem('chat_subcategoria', null);
+      sessionStorage.setItem('chat_titulo', null);
+      sessionStorage.setItem('chat_pregunta', null);
+    }
 
-// =========================================================
-// 1) FUNCIONES PARA GUARDAR VARIABLES OCULTAS
-// =========================================================
-function setCategoria(valor) {
-  sessionStorage.setItem('chat_categoria', valor);
-}
+    // =========================================================
+    // 1) FUNCIONES PARA GUARDAR VARIABLES OCULTAS
+    // =========================================================
+    function setCategoria(valor) {
+      sessionStorage.setItem('chat_categoria', valor);
+    }
 
-function setSubcategoria(valor) {
-  sessionStorage.setItem('chat_subcategoria', valor);
-}
+    function setSubcategoria(valor) {
+      sessionStorage.setItem('chat_subcategoria', valor);
+    }
 
-function setTitulo(valor) {
-  sessionStorage.setItem('chat_titulo', valor);
-}
+    function setTitulo(valor) {
+      sessionStorage.setItem('chat_titulo', valor);
+    }
 
-function setPregunta(valor) {
-  sessionStorage.setItem('chat_pregunta', valor);
-}
-function setAula(valor) {
-  sessionStorage.setItem('chat_aula', valor);
-}
+    function setPregunta(valor) {
+      sessionStorage.setItem('chat_pregunta', valor);
+    }
+    function setAula(valor) {
+      sessionStorage.setItem('chat_aula', valor);
+    }
 
-function resetVariablesOcultas() {
-  sessionStorage.setItem('chat_categoria', null);
-  sessionStorage.setItem('chat_subcategoria', null);
-  sessionStorage.setItem('chat_titulo', null);
-  sessionStorage.setItem('chat_pregunta', null);
-  sessionStorage.setItem('chat_aula', null);
-}
+    function resetVariablesOcultas() {
+      sessionStorage.setItem('chat_categoria', null);
+      sessionStorage.setItem('chat_subcategoria', null);
+      sessionStorage.setItem('chat_titulo', null);
+      sessionStorage.setItem('chat_pregunta', null);
+      sessionStorage.setItem('chat_aula', null);
+    }
 
-// =========================================================
-// 2) ACTUALIZADOR AUTOMÁTICO SEGÚN PAYLOAD
-// =========================================================
-function actualizarVariablesAutomaticas(message) {
+    // =========================================================
+    // 2) ACTUALIZADOR AUTOMÁTICO SEGÚN PAYLOAD
+    // =========================================================
+    function actualizarVariablesAutomaticas(message) {
 
-  if (message.startsWith("CAT_")) {
-    setCategoria(message.replace("CAT_", "").trim());
-    return;
-  }
-
-  if (message.startsWith("SUBCAT_")) {
-    setSubcategoria(message.replace("SUBCAT_", "").trim());
-    return;
-  }
-
-  if (message.startsWith("TIT_")) {
-    setTitulo(message.replace("TIT_", "").trim());
-    return;
-  }
-
-  if (message.startsWith("PRE_")) {
-    setPregunta(message.replace("PRE_", "").trim());
-    return;
-  }
-  if (message.startsWith("AUL_")) {
-  setAula(message.replace("AUL_", "").trim());
-  return;
-  }
-
-
-  // Texto libre = se guarda como pregunta
-  setPregunta(message);
-}
-
-
-
-  // Obtener los parámetros de la URL
-  const params = new URLSearchParams(location.search);
-  const selectedWebhook = params.get('webhook') || 'default';
-  const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
-  const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
-
-  const WEBHOOKS = {
-    default: 'https://n8n.iie.cl/webhook/ciudadania-digital',
-    curso1:  'https://n8n.iie.cl/webhook/ciberacoso',
-    curso2:  'https://n8n.iie.cl/webhook/ciudadania-digital',
-    curso3:  'https://n8n.iie.cl/webhook/disena-tu-clase',
-    curso4:  'https://n8n.iie.cl/webhook/tecnologias-digitales',
-    curso5:  'https://n8n.iie.cl/webhook/tecnicas-de-aprendizaje-activo',
-    curso6:  'https://n8n.iie.cl/webhook/aprendizaje-basado-en-proyectos',
-    curso7:  'https://n8n.iie.cl/webhook/ciencias-naturales-con-tic',
-    curso8:  'https://n8n.iie.cl/webhook/artes-con-tic',
-    curso9:  'https://n8n.iie.cl/webhook/lenguaje-con-tic',
-    curso10:  'https://n8n.iie.cl/webhook/evaluacion-y-retroalimentacion-de-aprendizajes',
-    curso11:  'https://n8n.iie.cl/webhook/diseno-de-presentaciones',
-    curso12:  'https://n8n.iie.cl/webhook/programacion-y-pensamiento-computacional-iii-iv',
-    curso13:  'https://n8n.iie.cl/webhook/bases-curriculares-lengua-y-cultura-mapuche',
-    curso14:  'https://n8n.iie.cl/webhook/genero',
-  };
-
-  const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
-  console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
-    
-  const messagesContainer = document.getElementById('messages-container');
-  const userInput        = document.getElementById('user-input');
-  const sendButton       = document.getElementById('send-button');
-  const chatWidget       = document.getElementById('custom-chat-widget');
-  const chatToggle       = document.getElementById('chat-toggle');
-  const minimizeBtn      = document.getElementById('minimize-chat');
-  const restartBtn = document.getElementById('restart-chat');
-  const inIframe = (window.self !== window.top);
-  const hideBtn  = params.get('hideBtn') === '1' || inIframe;
-  
-  function openChat() {
-    if (chatWidget) chatWidget.style.display = 'flex';
-    if (chatToggle) chatToggle.style.display = 'none';
-  }
-  function closeChat() {
-    if (chatWidget) chatWidget.style.display = 'none';
-    if (chatToggle) chatToggle.style.display = 'flex';
-  }
-  
-  if (chatToggle) chatToggle.addEventListener('click', openChat);
-  if (minimizeBtn) {
-    minimizeBtn.addEventListener('click', () => {
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage('closeChat', '*');
+      if (message.startsWith("CAT_")) {
+        setCategoria(message.replace("CAT_", "").trim());
+        return;
       }
-    });
-  }
 
-  if (hideBtn) {
-    if (chatToggle) chatToggle.style.display = 'none';
-    openChat();
-  }
+      if (message.startsWith("SUBCAT_")) {
+        setSubcategoria(message.replace("SUBCAT_", "").trim());
+        return;
+      }
 
-  if (restartBtn) {
-    restartBtn.addEventListener('click', () => {
-      resetVariablesOcultas();
-      messagesContainer.innerHTML = '';
-      initialMessage(); 
-    });
-  }
+      if (message.startsWith("TIT_")) {
+        setTitulo(message.replace("TIT_", "").trim());
+        return;
+      }
 
-  let sessionId = localStorage.getItem('chatSessionId');
-  if (!sessionId) {
-    sessionId = 'session_' + Math.random().toString(36).substring(2, 9);
-    localStorage.setItem('chatSessionId', sessionId);
-  }
+      if (message.startsWith("PRE_")) {
+        setPregunta(message.replace("PRE_", "").trim());
+        return;
+      }
+      if (message.startsWith("AUL_")) {
+        setAula(message.replace("AUL_", "").trim());
+        return;
+      }
 
-  let typingEl = null;
 
-  function showTyping() {
-    if (typingEl) return;
-    typingEl = document.createElement('div');
-    typingEl.className = 'message bot-message typing-message';
-    typingEl.innerHTML = `
+      // Texto libre = se guarda como pregunta
+      setPregunta(message);
+    }
+
+
+
+    // Obtener los parámetros de la URL
+    const params = new URLSearchParams(location.search);
+    const selectedWebhook = params.get('webhook') || 'default';
+    const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
+    const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
+
+    const WEBHOOKS = {
+      default: 'https://n8n.iie.cl/webhook/genero',
+      curso1: 'https://n8n.iie.cl/webhook/ciberacoso',
+      curso2: 'https://n8n.iie.cl/webhook/ciudadania-digital',
+      curso3: 'https://n8n.iie.cl/webhook/disena-tu-clase',
+      curso4: 'https://n8n.iie.cl/webhook/tecnologias-digitales',
+      curso5: 'https://n8n.iie.cl/webhook/tecnicas-de-aprendizaje-activo',
+      curso6: 'https://n8n.iie.cl/webhook/aprendizaje-basado-en-proyectos',
+      curso7: 'https://n8n.iie.cl/webhook/ciencias-naturales-con-tic',
+      curso8: 'https://n8n.iie.cl/webhook/artes-con-tic',
+      curso9: 'https://n8n.iie.cl/webhook/lenguaje-con-tic',
+      curso10: 'https://n8n.iie.cl/webhook/evaluacion-y-retroalimentacion-de-aprendizajes',
+      curso11: 'https://n8n.iie.cl/webhook/diseno-de-presentaciones',
+      curso12: 'https://n8n.iie.cl/webhook/programacion-y-pensamiento-computacional-iii-iv',
+      curso13: 'https://n8n.iie.cl/webhook/bases-curriculares-lengua-y-cultura-mapuche',
+      curso14: 'https://n8n.iie.cl/webhook/genero',
+    };
+
+    const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
+    console.log('[Chat IIE] Usando webhook:', WEBHOOK_URL);
+
+    const messagesContainer = document.getElementById('messages-container');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const chatWidget = document.getElementById('custom-chat-widget');
+    const chatToggle = document.getElementById('chat-toggle');
+    const minimizeBtn = document.getElementById('minimize-chat');
+    const restartBtn = document.getElementById('restart-chat');
+    const inIframe = (window.self !== window.top);
+    const hideBtn = params.get('hideBtn') === '1' || inIframe;
+
+    function openChat() {
+      if (chatWidget) chatWidget.style.display = 'flex';
+      if (chatToggle) chatToggle.style.display = 'none';
+    }
+    function closeChat() {
+      if (chatWidget) chatWidget.style.display = 'none';
+      if (chatToggle) chatToggle.style.display = 'flex';
+    }
+
+    if (chatToggle) chatToggle.addEventListener('click', openChat);
+    if (minimizeBtn) {
+      minimizeBtn.addEventListener('click', () => {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage('closeChat', '*');
+        }
+      });
+    }
+
+    if (hideBtn) {
+      if (chatToggle) chatToggle.style.display = 'none';
+      openChat();
+    }
+
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        resetVariablesOcultas();
+        messagesContainer.innerHTML = '';
+        initialMessage();
+      });
+    }
+
+    let sessionId = localStorage.getItem('chatSessionId');
+    if (!sessionId) {
+      sessionId = 'session_' + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem('chatSessionId', sessionId);
+    }
+
+    let typingEl = null;
+
+    function showTyping() {
+      if (typingEl) return;
+      typingEl = document.createElement('div');
+      typingEl.className = 'message bot-message typing-message';
+      typingEl.innerHTML = `
       <span>Escribiendo</span>
       <div class="typing-dots">
         <span></span><span></span><span></span>
       </div>
     `;
-    messagesContainer.appendChild(typingEl);
+      messagesContainer.appendChild(typingEl);
 
-    requestAnimationFrame(() => {
-      const allMessages = messagesContainer.querySelectorAll('.message');
-      const penultimateMessage = allMessages[allMessages.length - 2];
-      if (penultimateMessage) {
-        penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      requestAnimationFrame(() => {
+        const allMessages = messagesContainer.querySelectorAll('.message');
+        const penultimateMessage = allMessages[allMessages.length - 2];
+        if (penultimateMessage) {
+          penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    function hideTyping() {
+      if (!typingEl) return;
+      typingEl.remove();
+      typingEl = null;
+    }
+
+    async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
+      if (verificarAccionEspecial(message)) return;
+      actualizarVariablesAutomaticas(message);
+
+      if (message !== '_INICIO') {
+        if (isButtonPayload && buttonLabel) {
+
+          const htmlLabel = marked.parseInline(buttonLabel);
+          appendMessage(htmlLabel, 'user');
+        } else {
+          appendMessage(message, 'user');
+        }
       }
-    });
-  }
 
-  function hideTyping() {
-    if (!typingEl) return;
-    typingEl.remove();
-    typingEl = null;
-  }
+      userInput.value = '';
 
-  async function sendMessage(message, isButtonPayload = false, buttonLabel = null) {
-    if (verificarAccionEspecial(message)) return;
-    actualizarVariablesAutomaticas(message);
+      try {
+        showTyping();
 
-    if (message !== '_INICIO') {
-      if (isButtonPayload && buttonLabel) {
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chatInput: message,
+            sessionId: sessionId,
 
-        const htmlLabel = marked.parseInline(buttonLabel);
-        appendMessage(htmlLabel, 'user');
-      } else {
-        appendMessage(message, 'user');
+            // Variables invisibles
+            categoria: sessionStorage.getItem('chat_categoria'),
+            subcategoria: sessionStorage.getItem('chat_subcategoria'),
+            titulo: sessionStorage.getItem('chat_titulo'),
+            pregunta: sessionStorage.getItem('chat_pregunta'),
+            aula: sessionStorage.getItem('chat_aula')
+          })
+        });
+
+        const data = await response.json();
+
+        hideTyping();
+        renderResponse(data);
+      } catch {
+        // hideTyping();
+        //  appendMessage("Lo siento, hubo un error de conexión.", 'bot');
       }
     }
 
-    userInput.value = '';
 
-    try {
-      showTyping();
+    function renderResponse(data) {
+      if (data.ignore) return;
 
-      const response = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-        chatInput: message,
-        sessionId: sessionId,
+      let text = data.text || "...";
 
-        // Variables invisibles
-        categoria: sessionStorage.getItem('chat_categoria'),
-        subcategoria: sessionStorage.getItem('chat_subcategoria'),
-        titulo: sessionStorage.getItem('chat_titulo'),
-        pregunta: sessionStorage.getItem('chat_pregunta'),
-        aula: sessionStorage.getItem('chat_aula') 
-      })
+
+      marked.setOptions({
+        breaks: true,
+        gfm: true
       });
 
-      const data = await response.json();
 
-      hideTyping();
-      renderResponse(data);
-    } catch {
-      // hideTyping();
-     //  appendMessage("Lo siento, hubo un error de conexión.", 'bot');
+      let html = marked.parse(text);
+
+      // ******* 1. EVITAR VÍNCULOS EN CORREOS ELECTRÓNICOS (Lógica existente) *******
+      html = html.replace(
+        /(\+56\s?9[\s-]?\d{4}[\s-]?\d{4})/g,  // Modificado para que capture el +56 con el número
+        function (match) {
+          // 1. Elimina todos los caracteres no numéricos del número capturado, pero mantenemos el +56
+          let phoneNumber = match.replace(/\D/g, "");  // Elimina todos los caracteres no numéricos
+
+          // 2. Aseguramos que el número empieza con 56 y lo mantiene
+          if (phoneNumber.startsWith("56")) {
+            // No se necesita añadir nada si ya tiene el 56
+          } else {
+            // Si el número comienza con +569 o con solo 9, lo corregimos a 56
+            phoneNumber = "56" + phoneNumber.slice(1);
+          }
+
+          // 3. Crea la URL usando el número de 11 dígitos limpio (569XXXXXXXX)
+          const waUrl = `https://wa.me/${phoneNumber}`;  // Ahora está correcto
+
+          // 4. Devuelve el enlace con el número completo como texto
+          return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;  // Hace que todo el número sea un enlace
+        }
+      );
+
+      // ******* 2. URLS GENERALES *******
+      // Ahora las URLs se redirigen correctamente
+      html = html.replace(
+        /(?<!href=")(https?:\/\/[^\s<]+)/g,
+        '<a href="$1" target="_blank" class="chat-link">$1</a>' // Para las URLs también
+      );
+      html = html.replace(
+        /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,  // Para números fijos
+        function (match) {
+          let phoneNumber = match.replace(/\D/g, "");  // Elimina caracteres no numéricos
+
+          // Si no es móvil (no empieza con 9, +569 o 56), lo tratamos como un número fijo
+          if (!phoneNumber.startsWith("56") && !phoneNumber.startsWith("9") && !phoneNumber.startsWith("+569")) {
+            const telUrl = `tel:${phoneNumber}`;  // Enlace de llamada
+            return `<a href="${telUrl}" class="chat-link chat-link-standard">${match}</a>`;  // Mostrar enlace de llamada
+          }
+
+          // Si es un número móvil, lo dejamos sin cambios
+          return match;
+        }
+      );
+
+      appendMessage(html, 'bot', false);
+      const showDefaultButtons = data.showDefaultButtons === true || data.text?.includes('SHOW_DEFAULT_BUTTONS');
+
+      if (showDefaultButtons) {
+        // Mostrar los botones predefinidos del frontend
+        mostrarBotonesDefault();
+      } else if (data.extra || (data.buttons && data.buttons.length)) {
+        // Mostrar botones personalizados del backend
+        const blockDiv = document.createElement('div');
+        blockDiv.className = 'message bot-message';
+
+        if (data.extra) {
+          const p = document.createElement('p');
+          p.innerHTML = marked.parse(data.extra);
+          blockDiv.appendChild(p);
+
+          const hr = document.createElement('hr');
+          hr.style.border = "1px solid #E2E8F0";
+          hr.style.margin = "8px 0";
+          blockDiv.appendChild(hr);
+        }
+
+        if (data.buttons && Array.isArray(data.buttons)) {
+          const buttonsContainer = document.createElement('div');
+          buttonsContainer.className = 'bot-options-list';
+
+          data.buttons.forEach(button => {
+            let btn;
+            if (button.url) {
+              btn = document.createElement('a');
+              btn.href = button.url;
+              btn.target = '_blank';
+            } else {
+              btn = document.createElement('button');
+              btn.onclick = () => {
+                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                sendMessage(button.payload, true, button.label);
+              };
+            }
+
+            btn.className = 'chat-option-btn list-item-btn';
+            btn.innerHTML = marked.parseInline(button.label);
+            buttonsContainer.appendChild(btn);
+          });
+
+          blockDiv.appendChild(buttonsContainer);
+        }
+
+        messagesContainer.appendChild(blockDiv);
+      }
+
+      // Scroll al último mensaje del usuario
+      const allMessages = messagesContainer.querySelectorAll('.message');
+      let lastUserMessage = null;
+
+      for (let i = allMessages.length - 1; i >= 0; i--) {
+        if (allMessages[i].classList.contains('user-message')) {
+          lastUserMessage = allMessages[i];
+          break;
+        }
+      }
+
+      if (lastUserMessage) {
+        requestAnimationFrame(() => {
+          lastUserMessage.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        });
+      }
     }
-  }
-  
 
-  function renderResponse(data) {
-  if (data.ignore) return;
+    // 🆕 NUEVA FUNCIÓN: Mostrar botones predefinidos del frontend
+    function mostrarBotonesDefault() {
+      const blockDiv = document.createElement('div');
+      blockDiv.className = 'message bot-message';
 
-  let text = data.text || "...";
-  
-
-  marked.setOptions({
-    breaks: true,
-    gfm: true
-  });
-
-
-let html = marked.parse(text);
-
-// ******* 1. EVITAR VÍNCULOS EN CORREOS ELECTRÓNICOS (Lógica existente) *******
-html = html.replace(
-  /(\+56\s?9[\s-]?\d{4}[\s-]?\d{4})/g,  // Modificado para que capture el +56 con el número
-  function(match) {
-    // 1. Elimina todos los caracteres no numéricos del número capturado, pero mantenemos el +56
-    let phoneNumber = match.replace(/\D/g, "");  // Elimina todos los caracteres no numéricos
-    
-    // 2. Aseguramos que el número empieza con 56 y lo mantiene
-    if (phoneNumber.startsWith("56")) {
-      // No se necesita añadir nada si ya tiene el 56
-    } else {
-      // Si el número comienza con +569 o con solo 9, lo corregimos a 56
-      phoneNumber = "56" + phoneNumber.slice(1); 
-    }
-    
-    // 3. Crea la URL usando el número de 11 dígitos limpio (569XXXXXXXX)
-    const waUrl = `https://wa.me/${phoneNumber}`;  // Ahora está correcto
-    
-    // 4. Devuelve el enlace con el número completo como texto
-    return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;  // Hace que todo el número sea un enlace
-  }
-);
-
-// ******* 2. URLS GENERALES *******
-// Ahora las URLs se redirigen correctamente
-html = html.replace(
-  /(?<!href=")(https?:\/\/[^\s<]+)/g,
-  '<a href="$1" target="_blank" class="chat-link">$1</a>' // Para las URLs también
-);
-html = html.replace(
-  /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,  // Para números fijos
-  function(match) {
-    let phoneNumber = match.replace(/\D/g, "");  // Elimina caracteres no numéricos
-
-    // Si no es móvil (no empieza con 9, +569 o 56), lo tratamos como un número fijo
-    if (!phoneNumber.startsWith("56") && !phoneNumber.startsWith("9") && !phoneNumber.startsWith("+569")) {
-      const telUrl = `tel:${phoneNumber}`;  // Enlace de llamada
-      return `<a href="${telUrl}" class="chat-link chat-link-standard">${match}</a>`;  // Mostrar enlace de llamada
-    }
-
-    // Si es un número móvil, lo dejamos sin cambios
-    return match;
-  }
-);
-
-appendMessage(html, 'bot', false);
-
-
-
-// ...
-
-
-  // Bloque combinado: texto extra + botones dentro del mismo contenedor
-  if (data.extra || (data.buttons && data.buttons.length)) {
-    const blockDiv = document.createElement('div');
-    blockDiv.className = 'message bot-message';
-
-    if (data.extra) {
-  const p = document.createElement('p');
-  p.innerHTML = marked.parse(data.extra);
-  blockDiv.appendChild(p);
-
-  // Usar un borde discreto o barra con menos espacio
-  const hr = document.createElement('hr');
-  hr.style.border = "1px solid #E2E8F0";  // Barra sutil
-  hr.style.margin = "8px 0";  // Ajuste de espacio alrededor de la barra
-  blockDiv.appendChild(hr);
-}
-
-
-
-    // Botones (si existen)
-    if (data.buttons && Array.isArray(data.buttons)) {
       const buttonsContainer = document.createElement('div');
       buttonsContainer.className = 'bot-options-list';
 
-      data.buttons.forEach(button => {
-        let btn;
-        if (button.url) {
-          btn = document.createElement('a');
-          btn.href = button.url;
-          btn.target = '_blank';
-        } else {
-          btn = document.createElement('button');
-          btn.onclick = () => {
-            btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            sendMessage(button.payload, true, button.label);
-            scrollToBottom();
-          };
-        }
+      // Botón 1: Preguntas frecuentes
+      const btn1 = document.createElement('button');
+      btn1.className = 'chat-option-btn list-item-btn';
+      btn1.innerHTML = '📚 Ver preguntas frecuentes';
+      btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
+      buttonsContainer.appendChild(btn1);
 
-        btn.className = 'chat-option-btn list-item-btn';
-       // btn.textContent = button.label;
-        btn.innerHTML = marked.parse(button.label);
-        buttonsContainer.appendChild(btn);
-      });
+      // Botón 2: WhatsApp
+      const btn4 = document.createElement('a');
+      btn4.className = 'chat-option-btn list-item-btn';
+      btn4.innerHTML = `
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+      alt="WhatsApp"
+      style="width:18px; height:18px; vertical-align:middle; margin-right:4px;">
+    Chatear por WhatsApp`;
+      btn4.onclick = (e) => {
+        e.preventDefault();
+        sendMessage("BTN_WSP", true, "Chatear por WhatsApp");
+        setTimeout(() => {
+          window.open("https://wa.me/56986851342", "_blank");
+        }, 200);
+      };
+      btn4.style.textDecoration = 'none';
+      buttonsContainer.appendChild(btn4);
+
+      // Botón 3: Formulario de contacto
+      const btn3 = document.createElement('button');
+      btn3.className = 'chat-option-btn list-item-btn';
+      btn3.innerHTML = '✉️ Envíanos tu consulta';
+      btn3.onclick = () => {
+        sendMessage('BTN_CORREO', true, '✉️ Envíanos tu consulta');
+        setTimeout(() => { 
+          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
+          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
+          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
+
+           mostrarFormularioContacto();
+
+
+          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
+          // esto se cambio $OJOOOOOOOOOO$                    sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
+        }, 200);
+      };
+      buttonsContainer.appendChild(btn3);
 
       blockDiv.appendChild(buttonsContainer);
+      messagesContainer.appendChild(blockDiv);
     }
 
-    messagesContainer.appendChild(blockDiv);
-  }
 
-// Buscar el último mensaje del usuario
-const allMessages = messagesContainer.querySelectorAll('.message');
-let lastUserMessage = null;
+    async function mostrarFormularioContacto() {
+      const blockDiv = document.createElement('div');
+      blockDiv.className = 'message bot-message';
 
-// Recorrer desde el final para encontrar el último user-message
-for (let i = allMessages.length - 1; i >= 0; i--) {
-    if (allMessages[i].classList.contains('user-message')) {
-      lastUserMessage = allMessages[i];
-      break;
-    }
-  }
-
-  // Si encontramos un mensaje del usuario, hacer scroll hasta él
-  if (lastUserMessage) {
-    requestAnimationFrame(() => {
-      lastUserMessage.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start',  // Esto lo posiciona en la parte superior
-        inline: 'nearest' 
-      });
-    });
-  }
-
-  document.querySelectorAll('.bot-message a.chat-link').forEach(link => {
-    const href = link.getAttribute('href');
-    if (linkMap[href]) {
-      link.setAttribute('href', linkMap[href]);
-      link.setAttribute('target', '_blank'); // abrir en nueva pestaña
-    }
-  });
-}
-
-
-  async function mostrarFormularioContacto() {
-    const blockDiv = document.createElement('div');
-    blockDiv.className = 'message bot-message';
-
-    blockDiv.innerHTML = `
+      blockDiv.innerHTML = `
       <p class="form-title">📧 Formulario de Contacto</p>
       <form id="contact-form">
         <input type="text" name="nombre" placeholder="Nombre completo" required>
@@ -958,172 +1043,173 @@ for (let i = allMessages.length - 1; i >= 0; i--) {
       </form>
     `;
 
-    messagesContainer.appendChild(blockDiv);
-    blockDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      messagesContainer.appendChild(blockDiv);
+      blockDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    const form = blockDiv.querySelector('#contact-form');
-    const status = blockDiv.querySelector('#sending-status');
+      const form = blockDiv.querySelector('#contact-form');
+      const status = blockDiv.querySelector('#sending-status');
 
-    form.addEventListener('submit', async (e) => {
-  e.preventDefault();  // Prevenir el comportamiento por defecto del formulario (recargar página)
-      
-  // Obtener los valores del formulario
-  const nombre = form.querySelector('[name="nombre"]').value;
-  const correo = form.querySelector('[name="correo"]').value;
-  const telefono = form.querySelector('[name="telefono"]').value;
-  const mensaje = form.querySelector('[name="mensaje"]').value;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();  // Prevenir el comportamiento por defecto del formulario (recargar página)
 
- // Obtener las variables del curso y correo (leídas desde los params de la URL)
-console.log('Nombre del curso:', nombreCursoParam);
-console.log('Correo del curso:', correoCursoParam);
+        // Obtener los valores del formulario
+        const nombre = form.querySelector('[name="nombre"]').value;
+        const correo = form.querySelector('[name="correo"]').value;
+        const telefono = form.querySelector('[name="telefono"]').value;
+        const mensaje = form.querySelector('[name="mensaje"]').value;
 
-// Crear el objeto con los datos que se enviarán
-const formData = { 
-  nombre, 
-  correo, 
-  telefono, 
-  mensaje, 
-  nombre_curso: nombreCursoParam, // Usar la variable leída de la URL
-  correo_curso: correoCursoParam  // Usar la variable leída de la URL
-};
+        // Obtener las variables del curso y correo (leídas desde los params de la URL)
+        console.log('Nombre del curso:', nombreCursoParam);
+        console.log('Correo del curso:', correoCursoParam);
 
-  // Deshabilitar todos los campos del formulario para prevenir envíos repetidos
-  const inputs = form.querySelectorAll('input, textarea, button');
-  inputs.forEach(el => el.disabled = true);
+        // Crear el objeto con los datos que se enviarán
+        const formData = {
+          nombre,
+          correo,
+          telefono,
+          mensaje,
+          nombre_curso: nombreCursoParam, // Usar la variable leída de la URL
+          correo_curso: correoCursoParam  // Usar la variable leída de la URL
+        };
 
-  // Mostrar el estado de envío del formulario
-  status.style.display = 'block';
+        // Deshabilitar todos los campos del formulario para prevenir envíos repetidos
+        const inputs = form.querySelectorAll('input, textarea, button');
+        inputs.forEach(el => el.disabled = true);
 
-  try {
-    // Enviar los datos al servidor (n8n webhook)
-    const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+        // Mostrar el estado de envío del formulario
+        status.style.display = 'block';
 
-    // Si la respuesta es exitosa, ocultamos el formulario y mostramos un mensaje de éxito
-    if (response.ok) {
-      form.style.opacity = "0";
-      setTimeout(() => form.style.display = "none", 600);  // Ocultar el formulario con animación
-      appendMessage("✅ ¡Gracias! Hemos recibido tu mensaje y te contactaremos pronto.", "bot");
-    } else {
-      // Si ocurre un error con la respuesta, mostrar mensaje de error
-      appendMessage("⚠️ Ocurrió un error al enviar el formulario. Intenta nuevamente más tarde.", "bot");
-      status.style.display = 'none';  // Ocultar el estado de envío
-      inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
+        try {
+          // Enviar los datos al servidor (n8n webhook)
+          const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+
+          // Si la respuesta es exitosa, ocultamos el formulario y mostramos un mensaje de éxito
+          if (response.ok) {
+            form.style.opacity = "0";
+            setTimeout(() => form.style.display = "none", 600);  // Ocultar el formulario con animación
+            appendMessage("✅ ¡Gracias! Hemos recibido tu mensaje y te contactaremos pronto.", "bot");
+          } else {
+            // Si ocurre un error con la respuesta, mostrar mensaje de error
+            appendMessage("⚠️ Ocurrió un error al enviar el formulario. Intenta nuevamente más tarde.", "bot");
+            status.style.display = 'none';  // Ocultar el estado de envío
+            inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
+          }
+        } catch (error) {
+          // Si hay un error de conexión o otro tipo, mostrar mensaje de error
+          appendMessage("⚠️ Error de conexión. Revisa tu red e inténtalo otra vez.", "bot");
+          status.style.display = 'none';  // Ocultar el estado de envío
+          inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
+        }
+      });
+
     }
-  } catch (error) {
-    // Si hay un error de conexión o otro tipo, mostrar mensaje de error
-    appendMessage("⚠️ Error de conexión. Revisa tu red e inténtalo otra vez.", "bot");
-    status.style.display = 'none';  // Ocultar el estado de envío
-    inputs.forEach(el => el.disabled = false);  // Habilitar los inputs nuevamente
-  }
-    });
 
-  }
-
-  function verificarAccionEspecial(message) {
-    if (message === 'ENVIAR_CORREO') {
-      mostrarFormularioContacto();
-      return true;
+    function verificarAccionEspecial(message) {
+      if (message === 'ENVIAR_CORREO') {
+        mostrarFormularioContacto();
+        return true;
+      }
+      return false;
     }
-    return false;
-  }
 
-  function appendMessage(message, sender, scroll = true) {
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `message ${sender}-message`;
-  const p = document.createElement('p');
-  p.innerHTML = message;
-  msgDiv.appendChild(p);
-  messagesContainer.appendChild(msgDiv);
+    function appendMessage(message, sender, scroll = true) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${sender}-message`;
+      const p = document.createElement('p');
+      p.innerHTML = message;
+      msgDiv.appendChild(p);
+      messagesContainer.appendChild(msgDiv);
 
-  // Eliminamos el desplazamiento automático
-  // No se llama a la función que hace scroll.
-}
+      // Eliminamos el desplazamiento automático
+      // No se llama a la función que hace scroll.
+    }
 
 
-  sendButton.addEventListener('click', () => {
-    const input = userInput.value.trim();
-    if (input) sendMessage(input);
-  });
-
-  userInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+    sendButton.addEventListener('click', () => {
       const input = userInput.value.trim();
       if (input) sendMessage(input);
-    }
-  });
+    });
 
-  function initialMessage() {
-    const blockDiv = document.createElement('div');
-    blockDiv.className = 'message bot-message';
+    userInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const input = userInput.value.trim();
+        if (input) sendMessage(input);
+      }
+    });
 
-    const p = document.createElement('p');
-    p.innerHTML = '👋 ¡Hola! Es un placer ayudarte. Soy tu Asistente Virtual y estoy aquí para guiarte. ¿Cómo puedo asistirte hoy? Escribe tu pregunta o elige una opción:';
-    p.style.marginBottom = '12px';
-    blockDiv.appendChild(p);
+    function initialMessage() {
+      const blockDiv = document.createElement('div');
+      blockDiv.className = 'message bot-message';
 
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.className = 'bot-options-list';
+      const p = document.createElement('p');
+      p.innerHTML = '👋 ¡Hola! Es un placer ayudarte. Soy tu Asistente Virtual y estoy aquí para guiarte. ¿Cómo puedo asistirte hoy? Escribe tu pregunta o elige una opción:';
+      p.style.marginBottom = '12px';
+      blockDiv.appendChild(p);
 
-    const btn1 = document.createElement('button');
-    btn1.className = 'chat-option-btn list-item-btn';
-    btn1.innerHTML = '📚  Ver preguntas frecuentes';
-    btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
-    buttonsContainer.appendChild(btn1);
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'bot-options-list';
 
-    const btn4 = document.createElement('a');
-    btn4.className = 'chat-option-btn list-item-btn';
-    btn4.innerHTML = `
+      const btn1 = document.createElement('button');
+      btn1.className = 'chat-option-btn list-item-btn';
+      btn1.innerHTML = '📚  Ver preguntas frecuentes';
+      btn1.onclick = () => sendMessage('ACTION_PREGUNTAS_FRECUENTES', true, '📚 Ver preguntas frecuentes');
+      buttonsContainer.appendChild(btn1);
+
+      const btn4 = document.createElement('a');
+      btn4.className = 'chat-option-btn list-item-btn';
+      btn4.innerHTML = `
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
           alt="WhatsApp"
           style="width:18px; height:18px; vertical-align:middle; margin-right:0px;">
         Chatear por WhatsApp`;
-    //btn4.href = 'https://wa.me/56986851342';
-    //btn4.target = '_blank';
-    btn4.onclick = () => {
-      // Solo enviamos métrica a n8n
-      sendMessage("BTN_WSP", true, "Chatear por WhatsApp");
+      //btn4.href = 'https://wa.me/56986851342';
+      //btn4.target = '_blank';
+      btn4.onclick = () => {
+        // Solo enviamos métrica a n8n
+        sendMessage("BTN_WSP", true, "Chatear por WhatsApp");
 
-      // Abrimos el WhatsApp REAL
-      setTimeout(() => {
-        window.open("https://wa.me/56986851342", "_blank");
-      }, 200);
-    };
-    btn4.style.textDecoration = 'none';  // Elimina el subrayado del enlace
-    buttonsContainer.appendChild(btn4);
+        // Abrimos el WhatsApp REAL
+        setTimeout(() => {
+          window.open("https://wa.me/56986851342", "_blank");
+        }, 200);
+      };
+      btn4.style.textDecoration = 'none';  // Elimina el subrayado del enlace
+      buttonsContainer.appendChild(btn4);
 
-    const btn3 = document.createElement('button');
-    btn3.className = 'chat-option-btn list-item-btn';
-    btn3.innerHTML = '✉️ Envíanos tu consulta';
-    btn3.onclick = () => {
-      // 1) Enviar métrica al backend
-      sendMessage('BTN_CORREO', true, '✉️ Envíanos tu consulta');
+      const btn3 = document.createElement('button');
+      btn3.className = 'chat-option-btn list-item-btn';
+      btn3.innerHTML = '✉️ Envíanos tu consulta';
+      btn3.onclick = () => {
+        // 1) Enviar métrica al backend
+        sendMessage('BTN_CORREO', true, '✉️ Envíanos tu consulta');
 
-      // 2) Ejecutar la acción normal del botón
-      setTimeout(() => {
-        sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
-      }, 200);
-    };
+        // 2) Ejecutar la acción normal del botón
+        setTimeout(() => {
+          sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
+        }, 200);
+      };
 
-    buttonsContainer.appendChild(btn3);
+      buttonsContainer.appendChild(btn3);
 
-    blockDiv.appendChild(buttonsContainer);
-    messagesContainer.appendChild(blockDiv);
-    
-    const allMessages = messagesContainer.querySelectorAll('.message');
-    const penultimateMessage = allMessages[allMessages.length - 2];
+      blockDiv.appendChild(buttonsContainer);
+      messagesContainer.appendChild(blockDiv);
 
-    if (penultimateMessage) {
-      penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const allMessages = messagesContainer.querySelectorAll('.message');
+      const penultimateMessage = allMessages[allMessages.length - 2];
+
+      if (penultimateMessage) {
+        penultimateMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
-  }
 
-  initialMessage();
+    initialMessage();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
+
 </html>
