@@ -836,137 +836,128 @@
 
 
     function renderResponse(data) {
-      if (data.ignore) return;
-
-      let text = data.text || "...";
-
-
-      marked.setOptions({
-        breaks: true,
-        gfm: true
-      });
-
-
-      let html = marked.parse(text);
-
-      // ******* 1. EVITAR VÍNCULOS EN CORREOS ELECTRÓNICOS (Lógica existente) *******
-      html = html.replace(
-        /(\+56\s?9[\s-]?\d{4}[\s-]?\d{4})/g,  // Modificado para que capture el +56 con el número
-        function (match) {
-          // 1. Elimina todos los caracteres no numéricos del número capturado, pero mantenemos el +56
-          let phoneNumber = match.replace(/\D/g, "");  // Elimina todos los caracteres no numéricos
-
-          // 2. Aseguramos que el número empieza con 56 y lo mantiene
-          if (phoneNumber.startsWith("56")) {
-            // No se necesita añadir nada si ya tiene el 56
-          } else {
-            // Si el número comienza con +569 o con solo 9, lo corregimos a 56
-            phoneNumber = "56" + phoneNumber.slice(1);
-          }
-
-          // 3. Crea la URL usando el número de 11 dígitos limpio (569XXXXXXXX)
-          const waUrl = `https://wa.me/${phoneNumber}`;  // Ahora está correcto
-
-          // 4. Devuelve el enlace con el número completo como texto
-          return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;  // Hace que todo el número sea un enlace
-        }
-      );
-
-      // ******* 2. URLS GENERALES *******
-      // Ahora las URLs se redirigen correctamente
-      html = html.replace(
-        /(?<!href=")(https?:\/\/[^\s<]+)/g,
-        '<a href="$1" target="_blank" class="chat-link">$1</a>' // Para las URLs también
-      );
-      html = html.replace(
-        /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,  // Para números fijos
-        function (match) {
-          let phoneNumber = match.replace(/\D/g, "");  // Elimina caracteres no numéricos
-
-          // Si no es móvil (no empieza con 9, +569 o 56), lo tratamos como un número fijo
-          if (!phoneNumber.startsWith("56") && !phoneNumber.startsWith("9") && !phoneNumber.startsWith("+569")) {
-            const telUrl = `tel:${phoneNumber}`;  // Enlace de llamada
-            return `<a href="${telUrl}" class="chat-link chat-link-standard">${match}</a>`;  // Mostrar enlace de llamada
-          }
-
-          // Si es un número móvil, lo dejamos sin cambios
-          return match;
-        }
-      );
-
-      appendMessage(html, 'bot', false);
-      const showDefaultButtons = data.showDefaultButtons === true || data.text?.includes('SHOW_DEFAULT_BUTTONS');
-
-      if (showDefaultButtons) {
-        // Mostrar los botones predefinidos del frontend
-        mostrarBotonesDefault();
-      } else if (data.extra || (data.buttons && data.buttons.length)) {
-        // Mostrar botones personalizados del backend
-        const blockDiv = document.createElement('div');
-        blockDiv.className = 'message bot-message';
-
-        if (data.extra) {
-          const p = document.createElement('p');
-          p.innerHTML = marked.parse(data.extra);
-          blockDiv.appendChild(p);
-
-          const hr = document.createElement('hr');
-          hr.style.border = "1px solid #E2E8F0";
-          hr.style.margin = "8px 0";
-          blockDiv.appendChild(hr);
+        // 🆕 PRIMERO: Procesar variables ocultas desde el backend
+        if (data.setVariables) {
+          if (data.setVariables.categoria) setCategoria(data.setVariables.categoria);
+          if (data.setVariables.subcategoria) setSubcategoria(data.setVariables.subcategoria);
+          if (data.setVariables.titulo) setTitulo(data.setVariables.titulo);
+          if (data.setVariables.pregunta) setPregunta(data.setVariables.pregunta);
+          if (data.setVariables.aula) setAula(data.setVariables.aula);
         }
 
-        if (data.buttons && Array.isArray(data.buttons)) {
-          const buttonsContainer = document.createElement('div');
-          buttonsContainer.className = 'bot-options-list';
+        // Si ignore=true, no mostrar nada
+        if (data.ignore) return;
 
-          data.buttons.forEach(button => {
-            let btn;
-            if (button.url) {
-              btn = document.createElement('a');
-              btn.href = button.url;
-              btn.target = '_blank';
-            } else {
-              btn = document.createElement('button');
-              btn.onclick = () => {
-                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                sendMessage(button.payload, true, button.label);
-              };
-            }
+        let text = data.text || "...";
 
-            btn.className = 'chat-option-btn list-item-btn';
-            btn.innerHTML = marked.parseInline(button.label);
-            buttonsContainer.appendChild(btn);
-          });
-
-          blockDiv.appendChild(buttonsContainer);
-        }
-
-        messagesContainer.appendChild(blockDiv);
-      }
-
-      // Scroll al último mensaje del usuario
-      const allMessages = messagesContainer.querySelectorAll('.message');
-      let lastUserMessage = null;
-
-      for (let i = allMessages.length - 1; i >= 0; i--) {
-        if (allMessages[i].classList.contains('user-message')) {
-          lastUserMessage = allMessages[i];
-          break;
-        }
-      }
-
-      if (lastUserMessage) {
-        requestAnimationFrame(() => {
-          lastUserMessage.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest'
-          });
+        marked.setOptions({
+          breaks: true,
+          gfm: true
         });
-      }
-    }
 
+        let html = marked.parse(text);
+
+        // (Todo tu código de procesamiento de enlaces continúa aquí...)
+        html = html.replace(
+          /(\+56\s?9[\s-]?\d{4}[\s-]?\d{4})/g,
+          function (match) {
+            let phoneNumber = match.replace(/\D/g, "");
+            if (phoneNumber.startsWith("56")) {
+            } else {
+              phoneNumber = "56" + phoneNumber.slice(1);
+            }
+            const waUrl = `https://wa.me/${phoneNumber}`;
+            return `<a href="${waUrl}" class="chat-link" target="_blank">${match}</a>`;
+          }
+        );
+
+        html = html.replace(
+          /(?<!href=")(https?:\/\/[^\s<]+)/g,
+          '<a href="$1" target="_blank" class="chat-link">$1</a>'
+        );
+
+        html = html.replace(
+          /(\+?\d{1,3}[\s-]?\(?\d+\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/g,
+          function (match) {
+            let phoneNumber = match.replace(/\D/g, "");
+            if (!phoneNumber.startsWith("56") && !phoneNumber.startsWith("9") && !phoneNumber.startsWith("+569")) {
+              const telUrl = `tel:${phoneNumber}`;
+              return `<a href="${telUrl}" class="chat-link chat-link-standard">${match}</a>`;
+            }
+            return match;
+          }
+        );
+
+        appendMessage(html, 'bot', false);
+        const showDefaultButtons = data.showDefaultButtons === true || data.text?.includes('SHOW_DEFAULT_BUTTONS');
+
+        if (showDefaultButtons) {
+          mostrarBotonesDefault();
+        } else if (data.extra || (data.buttons && data.buttons.length)) {
+          const blockDiv = document.createElement('div');
+          blockDiv.className = 'message bot-message';
+
+          if (data.extra) {
+            const p = document.createElement('p');
+            p.innerHTML = marked.parse(data.extra);
+            blockDiv.appendChild(p);
+
+            const hr = document.createElement('hr');
+            hr.style.border = "1px solid #E2E8F0";
+            hr.style.margin = "8px 0";
+            blockDiv.appendChild(hr);
+          }
+
+          if (data.buttons && Array.isArray(data.buttons)) {
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'bot-options-list';
+
+            data.buttons.forEach(button => {
+              let btn;
+              if (button.url) {
+                btn = document.createElement('a');
+                btn.href = button.url;
+                btn.target = '_blank';
+              } else {
+                btn = document.createElement('button');
+                btn.onclick = () => {
+                  btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  sendMessage(button.payload, true, button.label);
+                };
+              }
+
+              btn.className = 'chat-option-btn list-item-btn';
+              btn.innerHTML = marked.parseInline(button.label);
+              buttonsContainer.appendChild(btn);
+            });
+
+            blockDiv.appendChild(buttonsContainer);
+          }
+
+          messagesContainer.appendChild(blockDiv);
+        }
+
+        // Scroll al último mensaje del usuario
+        const allMessages = messagesContainer.querySelectorAll('.message');
+        let lastUserMessage = null;
+
+        for (let i = allMessages.length - 1; i >= 0; i--) {
+          if (allMessages[i].classList.contains('user-message')) {
+            lastUserMessage = allMessages[i];
+            break;
+          }
+        }
+
+        if (lastUserMessage) {
+          requestAnimationFrame(() => {
+            lastUserMessage.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          });
+        }
+      }
     // 🆕 NUEVA FUNCIÓN: Mostrar botones predefinidos del frontend
     function mostrarBotonesDefault() {
       const blockDiv = document.createElement('div');
