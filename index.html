@@ -692,22 +692,22 @@
     const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
     const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
 
-    const WEBHOOKS = {
-      default: 'https://n8n.iie.cl/webhook/genero',
-      curso1: 'https://n8n.iie.cl/webhook/ciberacoso',
-      curso2: 'https://n8n.iie.cl/webhook/ciudadania-digital',
-      curso3: 'https://n8n.iie.cl/webhook/disena-tu-clase',
-      curso4: 'https://n8n.iie.cl/webhook/tecnologias-digitales',
-      curso5: 'https://n8n.iie.cl/webhook/tecnicas-de-aprendizaje-activo',
-      curso6: 'https://n8n.iie.cl/webhook/aprendizaje-basado-en-proyectos',
-      curso7: 'https://n8n.iie.cl/webhook/ciencias-naturales-con-tic',
-      curso8: 'https://n8n.iie.cl/webhook/artes-con-tic',
-      curso9: 'https://n8n.iie.cl/webhook/lenguaje-con-tic',
-      curso10: 'https://n8n.iie.cl/webhook/evaluacion-y-retroalimentacion-de-aprendizajes',
-      curso11: 'https://n8n.iie.cl/webhook/diseno-de-presentaciones',
-      curso12: 'https://n8n.iie.cl/webhook/programacion-y-pensamiento-computacional-iii-iv',
-      curso13: 'https://n8n.iie.cl/webhook/bases-curriculares-lengua-y-cultura-mapuche',
-      curso14: 'https://n8n.iie.cl/webhook/genero',
+    const WEBHOOKS = {https://n8n-prod.iie.cl/webhook/genero
+      default: 'https://n8n-prod.iie.cl/webhook/genero',
+      curso1: 'https://n8n-prod.iie.cl/webhook/ciberacoso',
+      curso2: 'https://n8n-prod.iie.cl/webhook/ciudadania-digital',
+      curso3: 'https://n8n-prod.iie.cl/webhook/disena-tu-clase',
+      curso4: 'https://n8n-prod.iie.cl/webhook/tecnologias-digitales',
+      curso5: 'https://n8n-prod.iie.cl/webhook/tecnicas-de-aprendizaje-activo',
+      curso6: 'https://n8n-prod.iie.cl/webhook/aprendizaje-basado-en-proyectos',
+      curso7: 'https://n8n-prod.iie.cl/webhook/ciencias-naturales-con-tic',
+      curso8: 'https://n8n-prod.iie.cl/webhook/artes-con-tic',
+      curso9: 'https://n8n-prod.iie.cl/webhook/lenguaje-con-tic',
+      curso10: 'https://n8n-prod.iie.cl/webhook/evaluacion-y-retroalimentacion-de-aprendizajes',
+      curso11: 'https://n8n-prod.iie.cl/webhook/diseno-de-presentaciones',
+      curso12: 'https://n8n-prod.iie.cl/webhook/programacion-y-pensamiento-computacional-iii-iv',
+      curso13: 'https://n8n-prod.iie.cl/webhook/bases-curriculares-lengua-y-cultura-mapuche',
+      curso14: 'https://n8n-prod.iie.cl/webhook/genero',
     };
 
     const WEBHOOK_URL = WEBHOOKS[selectedWebhook] || WEBHOOKS.default;
