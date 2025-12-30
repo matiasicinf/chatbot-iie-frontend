@@ -692,7 +692,7 @@
     const nombreCursoParam = params.get('nombre_curso') || 'Nombre del curso no especificado';
     const correoCursoParam = params.get('correo_curso') || 'Correo no especificado';
 
-    const WEBHOOKS = {https://n8n-prod.iie.cl/webhook/genero
+    const WEBHOOKS = {
       default: 'https://n8n-prod.iie.cl/webhook/genero',
       curso1: 'https://n8n-prod.iie.cl/webhook/ciberacoso',
       curso2: 'https://n8n-prod.iie.cl/webhook/ciudadania-digital',
@@ -958,7 +958,7 @@
           });
         }
       }
-    // 🆕 NUEVA FUNCIÓN: Mostrar botones predefinidos del frontend
+    
     function mostrarBotonesDefault() {
       const blockDiv = document.createElement('div');
       blockDiv.className = 'message bot-message';
@@ -998,15 +998,7 @@
       btn3.onclick = () => {
         sendMessage('BTN_CORREO', true, '✉️ Envíanos tu consulta');
         setTimeout(() => { 
-          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
-          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
-          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
-
            mostrarFormularioContacto();
-
-
-          //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  //  // 
-          // esto se cambio $OJOOOOOOOOOO$                    sendMessage('ENVIAR_CORREO', true, '✉️ Envíanos tu consulta');
         }, 200);
       };
       buttonsContainer.appendChild(btn3);
@@ -1059,8 +1051,8 @@
           correo,
           telefono,
           mensaje,
-          nombre_curso: nombreCursoParam, // Usar la variable leída de la URL
-          correo_curso: correoCursoParam  // Usar la variable leída de la URL
+          nombre_curso: nombreCursoParam, 
+          correo_curso: correoCursoParam  
         };
 
         // Deshabilitar todos los campos del formulario para prevenir envíos repetidos
