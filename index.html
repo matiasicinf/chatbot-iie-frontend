@@ -1064,7 +1064,7 @@
 
         try {
           // Enviar los datos al servidor (n8n webhook)
-          const response = await fetch("https://n8n.iie.cl/webhook/form-contacto", {
+          const response = await fetch("https://n8n-prod.iie.cl/webhook/form-contacto", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
